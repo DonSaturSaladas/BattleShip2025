@@ -14,9 +14,11 @@ class MainScreen():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
-            if event.type == pygame.RESIZABLE:
-                nWidth, nHeight = event.w, event.h
-                self.scale_factor = nWidth /SCREEN_WIDTH                
+            else:
+                if event.type == pygame.RESIZABLE:
+                    nWidth, nHeight = event.w, event.h
+                    self.scale_factor = nWidth /SCREEN_WIDTH
+                self.selected_screen.handle_event(event)
                 
         self.selected_screen.run()
         pygame.display.update()
@@ -35,5 +37,6 @@ class MainScreen():
             for col in range(COLS):
                 pygame.draw.rect(self.window, (255,255,255), pygame.Rect(row*scaled_cell_size+left, col*CELL_SIZE+top,scaled_cell_size, scaled_cell_size), width=1)
         pygame.display.update()
+    
 
 
