@@ -1,4 +1,4 @@
-import pygame
+import pygame, random
 from .ship_setup_screen import ShipSetupScreen
 from .view_constants import *
 
@@ -32,11 +32,14 @@ class MainScreen():
         board_width = BOARD_WIDTH * scaled_cell_size
         board_height = BOARD_HEIGHT * scaled_cell_size
         
-        pygame.draw.rect(self.window, (255,255,255), pygame.Rect(left, top, board_width, board_width), width=1)
+        pygame.draw.rect(self.window, (255,255,255), pygame.Rect(left, top, board_width, board_height), width=1)
         for row in range(ROWS):
             for col in range(COLS):
                 pygame.draw.rect(self.window, (255,255,255), pygame.Rect(row*scaled_cell_size+left, col*CELL_SIZE+top,scaled_cell_size, scaled_cell_size), width=1)
         pygame.display.update()
+    
+    def draw_ship(self, lenght, left, top, color):
+        pygame.draw.rect(self.window, color, pygame.Rect(left, top, lenght * CELL_SIZE, CELL_SIZE))
     
 
 
