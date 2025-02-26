@@ -13,7 +13,7 @@ class ShipSetupScreen:
         total_width = BOARD_WIDTH * CELL_SIZE + BOARD_SEPARATION_TO_SHIPS + SHIP_POOL_WIDTH
         ship_pool_left = (SCREEN_WIDTH - total_width) / 2
         ship_pool_top = (SCREEN_HEIGHT - SHIP_POOL_HEIGHT) / 2
-
+        
         board_left = ship_pool_left + SHIP_POOL_WIDTH + BOARD_SEPARATION_TO_SHIPS
         self.draw_ship_pool(ship_pool_left, ship_pool_top)
         self.main_screen.draw_board(board_left,0)

@@ -23,7 +23,7 @@ class Cell:
             self.hidden = False
             self.update()
             if(self.hasShip):
-                self.sprite = 
+                self.sprite = self.sprites[2]
 
             
             
