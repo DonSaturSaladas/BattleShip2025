@@ -3,7 +3,7 @@ from views.view_constants import *
 from views.main_screen import MainScreen
 
 pygame.init()
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
 main_screen = MainScreen(screen)
 
 while main_screen.is_running():

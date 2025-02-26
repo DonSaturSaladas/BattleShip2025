@@ -68,3 +68,4 @@ class ShipSetupScreen:
         self.main_screen.draw_ship(3, self.ship_pool_coordinates[0] + 2 * CELL_SIZE, self.ship_pool_coordinates[1] + 9 * CELL_SIZE / 2, (13, 6, 48))
         self.main_screen.draw_ship(2, self.ship_pool_coordinates[0] + 5 * CELL_SIZE / 2, self.ship_pool_coordinates[1] + 6 * CELL_SIZE, (88,153,226))
 
+    
