@@ -1,9 +1,9 @@
 import pygame
 from views.view_constants import * 
 class cellObserver:
-    def __init__(self, win, sprite, cell):
+    def __init__(self, win, cell):
         self.win = win
-        self.sprite = sprite
+        self.sprite = cell.actualSprite
         self.cell = cell
         
         self.rx = self.calcPos(self.cell.x)

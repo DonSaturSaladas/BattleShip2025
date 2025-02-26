@@ -13,3 +13,7 @@ SCREEN_HEIGHT       = BOARD_HEIGHT * CELL_SIZE
 BOARD_SEPARATION_TO_SHIPS   = 20
 SHIP_POOL_WIDTH             = 7 * CELL_SIZE
 SHIP_POOL_HEIGHT            = 7 * CELL_SIZE
+
+# Assets Path 
+
+WATER_PATH = "assets/water.png"

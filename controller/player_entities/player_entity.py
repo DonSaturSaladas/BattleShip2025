@@ -6,4 +6,6 @@ class PlayerEntity:
         self.ships = []
         
     def putShip(self, ship):
-        
+        self.ships.append(ship)
+    
+    
