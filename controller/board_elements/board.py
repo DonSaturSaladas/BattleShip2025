@@ -1,8 +1,7 @@
 
-from cell import *
+from .cell import *
 from views.view_constants import *
-from factories.sprite import Sprite
-from views.cellObserver import cellObserver
+from controller.factories.sprite import Sprite
 
 
 class Board:
@@ -16,7 +15,7 @@ class Board:
         for row in range(ROWS):
             self.cells.append([])
             for col in range(COLS):
-                self.board[row].append(Cell(row, col, sprites))
+                self.cells[row].append(Cell(row, col, sprites))
 
             
     def getCell(self, x, y):

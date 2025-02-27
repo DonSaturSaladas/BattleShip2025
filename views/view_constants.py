@@ -1,3 +1,5 @@
+import pygame
+import os
 BOARD_WIDTH         = 10
 BOARD_HEIGHT        = 10
 BOARD_SEPARATION    = 5
@@ -16,4 +18,4 @@ SHIP_POOL_HEIGHT            = 7 * CELL_SIZE
 
 # Assets Path 
 
-WATER_PATH = "assets/water.png"
+WATER_PATH = pygame.transform.scale((pygame.image.load(os.path.join ("assets","water.png"))),(CELL_SIZE, CELL_SIZE))

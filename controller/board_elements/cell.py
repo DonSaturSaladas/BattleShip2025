@@ -7,25 +7,20 @@ class Cell:
         self.y = y
         self.observer = None
         self.actualSprite = sprites[0]
-        
+
         self.sprites = sprites
         self.hidden = False
         self.hasShip = False
-        
+
     def registerObserver(self, observer):
         self.observer = observer
-    
+
     def update(self):
-        self.observer.update();
-        
+        self.observer.update()
+
     def selected(self):
-        if(self.hidden):
+        if self.hidden:
             self.hidden = False
             self.update()
-            if(self.hasShip):
+            if self.hasShip:
                 self.sprite = self.sprites[2]
-
-            
-            
-    
-    
