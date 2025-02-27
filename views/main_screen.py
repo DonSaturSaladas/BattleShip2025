@@ -2,9 +2,10 @@ import pygame
 from .ship_setup_screen import ShipSetupScreen
 from .view_constants import (
     CELL_SIZE,
-    SCREEN_WIDTH,
     ROWS,
     COLS,
+    BASE_SCREEN_HEIGHT,
+    BASE_SCREEN_WIDTH
 )
 
 
@@ -12,10 +13,11 @@ class Main_Screen:
     def __init__(self, window):
         self.running = True
         self.window = window
-        self.ship_setup_screen = ShipSetupScreen(window, self)
-        self.selected_screen = self.ship_setup_screen
+        self.screen_width, self.screen_height = pygame.display.get_surface().get_size()
         self.scale_factor = 1
         self.scaled_cell_size = int(CELL_SIZE * self.scale_factor)
+        self.ship_setup_screen = ShipSetupScreen(window, self)
+        self.selected_screen = self.ship_setup_screen
         self.game = None
 
     def run(self):
@@ -24,12 +26,14 @@ class Main_Screen:
                 self.running = False
             if event.type == pygame.VIDEORESIZE:
                 nWidth, nHeight = event.w, event.h
-                self.scale_factor = nWidth / SCREEN_WIDTH
+                self.scale_factor = nWidth / BASE_SCREEN_WIDTH
                 self.scaled_cell_size = int(CELL_SIZE * self.scale_factor)
                 self.window = pygame.display.set_mode(
                     (nWidth, nHeight), pygame.RESIZABLE
                 )
-                
+                self.screen_width = nWidth
+                self.screen_height = nHeight
+                self.ship_setup_screen.screen_size_changed()
             self.selected_screen.handle_event(event)
 
         self.selected_screen.run()
@@ -70,5 +74,5 @@ class Main_Screen:
 
     def draw_ship(self, lenght, left, top, color):
         pygame.draw.rect(
-            self.window, color, pygame.Rect(left, top, lenght * CELL_SIZE, CELL_SIZE)
+            self.window, color, pygame.Rect(left, top, lenght * self.scaled_cell_size, self.scaled_cell_size)
         )
