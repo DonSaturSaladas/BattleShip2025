@@ -1,6 +1,6 @@
 from .player_entities.player import Player
 from views.view_constants import ROWS, COLS
-from views.cellObserver import CellObserver
+from views.cell_Observer import Cell_Observer
 
 
 class Game:
@@ -14,5 +14,5 @@ class Game:
         for row in range(ROWS):
             for col in range(COLS):
                 cell = self.player.board.getCell(row, col)
-                cell.registerObserver(CellObserver(self.main_screen ,cell))
+                cell.registerObserver(Cell_Observer(self.main_screen ,cell))
 

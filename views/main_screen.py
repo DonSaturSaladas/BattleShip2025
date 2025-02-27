@@ -2,15 +2,13 @@ import pygame
 from .ship_setup_screen import ShipSetupScreen
 from .view_constants import (
     CELL_SIZE,
-    BOARD_WIDTH,
-    BOARD_HEIGHT,
     SCREEN_WIDTH,
     ROWS,
     COLS,
 )
 
 
-class MainScreen:
+class Main_Screen:
     def __init__(self, window):
         self.running = True
         self.window = window
@@ -41,8 +39,8 @@ class MainScreen:
         return self.running
 
     def draw_board(self, left, top):
-        board_width = BOARD_WIDTH * self.scaled_cell_size
-        board_height = BOARD_HEIGHT * self.scaled_cell_size
+        board_width = ROWS * self.scaled_cell_size
+        board_height = COLS * self.scaled_cell_size
 
         pygame.draw.rect(
             self.window,

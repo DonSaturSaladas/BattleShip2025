@@ -28,7 +28,7 @@ class ShipSetupScreen:
                 print("Clicked ship pool")
         
     def board_clicked(self, coordinate_x, coordinate_y):
-        return coordinate_x >= self.board_coodinates[0] and coordinate_x <= self.board_coodinates[0] + BOARD_WIDTH * CELL_SIZE
+        return coordinate_x >= self.board_coodinates[0] and coordinate_x <= self.board_coodinates[0] + ROWS * CELL_SIZE
 
     def get_pressed_cell(self, coordinate_x, coordinate_y):
         board_x = int((coordinate_x - self.board_coodinates[0]) // CELL_SIZE)
@@ -49,7 +49,7 @@ class ShipSetupScreen:
         self.main_screen.draw_board(self.board_coodinates[0], self.board_coodinates[1])
 
     def get_ship_setup_width(self):
-        return BOARD_WIDTH * CELL_SIZE + BOARD_SEPARATION_TO_SHIPS + SHIP_POOL_WIDTH
+        return ROWS * CELL_SIZE + BOARD_SEPARATION_TO_SHIPS + SHIP_POOL_WIDTH
     
     def get_ship_pool_coordinates(self):
         used_width = self.get_ship_setup_width()
