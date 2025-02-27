@@ -1,11 +1,11 @@
-from .player_entities.player_entity import PlayerEntity
+from .player_entities.player import Player
 from views.view_constants import ROWS, COLS
 from views.cellObserver import CellObserver
 
 
 class Game:
     def __init__(self, main_screen):
-        self.player = PlayerEntity()
+        self.player = Player()
         self.main_screen = main_screen
         self.setBoardCellsObserver()
 

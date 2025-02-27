@@ -31,6 +31,8 @@ class MainScreen:
                 self.window = pygame.display.set_mode(
                     (nWidth, nHeight), pygame.RESIZABLE
                 )
+                
+            self.selected_screen.handle_event(event)
 
         self.selected_screen.run()
         pygame.display.update()
@@ -61,10 +63,11 @@ class MainScreen:
                     ),
                     width=1,
                 )
-                print(self.game.player.board.getCell(row,col).observer)
-                self.game.player.board.getCell(
-                    row, col
-                ).update()  # TODO : replace with a way to choose whose board draw (player or opponent)
+
+                self.game.player.board.getCell(row, col).update(
+                    left, top
+                )  # TODO : replace with a way to choose whose board draw (player or opponent)
+
         pygame.display.update()
 
     def draw_ship(self, lenght, left, top, color):

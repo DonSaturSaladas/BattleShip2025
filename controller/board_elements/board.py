@@ -5,6 +5,7 @@ from controller.factories.sprite import Sprite
 
 
 class Board:
+    '''Is the logic representation of the board'''
     def __init__(self):
         self.cells = []
         self.createBoard()

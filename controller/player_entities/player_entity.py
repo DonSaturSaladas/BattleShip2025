@@ -1,10 +1,18 @@
 from controller.board_elements.board import Board
+from abc import ABC, abstractmethod
 
-class PlayerEntity:
+class Player_Entity(ABC):
+    
     def __init__(self):
         self.board = Board()
-        self.ships = []
+        self.ships = [] 
 
+    @abstractmethod
     def putShip(self, ship):
         self.ships.append(ship)
 
+    @abstractmethod
+    def getBoard(self):
+        return self.board
+    
+     

@@ -2,6 +2,12 @@ import pygame
 
 
 class Cell:
+    
+    '''Represents the cells of the board it can contain a ship or water,
+       its internal status changes depending on whearever the player or the opponent clicks on the cell,
+       The observer is in charge of printing and updating visually the object and his status
+       it haves a coleccion of spirtes used to represent visualy the satus of the cell'''
+       
     def __init__(self, x, y, sprites):
         self.x = x
         self.y = y
@@ -15,8 +21,9 @@ class Cell:
     def registerObserver(self, observer):
         self.observer = observer
 
-    def update(self):
-        self.observer.update()
+    def update(self, left, top):
+        ''''Arguments : left, top: especify the screen position of the board to print the observers in the screen'''
+        self.observer.update(left +1, top)
 
     def selected(self):
         if self.hidden:
