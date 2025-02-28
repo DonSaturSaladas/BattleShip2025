@@ -21,6 +21,7 @@ class Main_Screen:
         self.game = None
 
     def run(self):
+        self.window.fill((0, 0, 0))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False

@@ -13,19 +13,21 @@ class Cell_Observer:
         self.sprite :Sprite = cell.actualSprite
         self.cell = cell
 
-        self.rx = self.calcPos(self.cell.x)
-        self.ry = self.calcPos(self.cell.y)
+        self.relative_x = self.cell.x
+        self.relative_y = self.cell.y
+        self.calcPos(0,0)
 
     def update(self, left, top):
         self.sprite.path = pygame.transform.scale((self.sprite.getImg()),(self.win.scaled_cell_size -3, self.win.scaled_cell_size-1))
-        self.rx = self.calcPos(self.cell.x)
-        self.ry = self.calcPos(self.cell.y)
-        self.win.window.blit(self.sprite.getImg(), (self.rx + left, self.ry + top))
-        pygame.display.update()
+        
+        self.calcPos(left,top)
+        
+        self.win.window.blit(self.sprite.getImg(), (self.relative_x , self.relative_y))
 
 
     def setSprite(self, sprite):
         self.sprite = sprite
 
-    def calcPos(self, value):
-        return self.win.scaled_cell_size * value 
+    def calcPos(self, left, top):
+        self.relative_x = self.win.scaled_cell_size * self.cell.x + left
+        self.relative_y = self.win.scaled_cell_size * self.cell.y + top 

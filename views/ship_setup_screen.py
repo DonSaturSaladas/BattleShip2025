@@ -2,6 +2,8 @@ import pygame
 from .view_constants import *
 from pygame.locals import *
 
+placeholderShipTest = pygame.Rect((CELL_SIZE+5), CELL_SIZE, CELL_SIZE *4 , CELL_SIZE) #test feature
+
 class ShipSetupScreen:
     def __init__(self, window, main_screen):
         self.window = window
@@ -10,13 +12,43 @@ class ShipSetupScreen:
         self.ship_pool_coordinates = self.get_ship_pool_coordinates()
         self.board_coodinates = self.get_board_coordinates()
         self.selected_ship = None
+        self.selected = None
+        self.selected_offset_x = 0
+        self.selected_offset_y = 0
     
     def run(self):
         self.draw_setup_screen()
+        pygame.draw.rect(self.window, (94, 100, 114), placeholderShipTest) #Test feature
     
     def handle_event(self, event):
-        if event.type == MOUSEBUTTONDOWN:
+        
+        #dragable features
+        if event.type == pygame.MOUSEBUTTONDOWN:
             self.mouse_clicked(event)
+            if event.button == 1:
+                if placeholderShipTest.collidepoint(event.pos):
+                    print(event.pos)
+                    self.selected = 1
+                    self.selected_offset_x = placeholderShipTest.x - event.pos[0]
+                    self.selected_offset_y = placeholderShipTest.y - event.pos[1]
+               
+        elif event.type == pygame.MOUSEBUTTONUP:
+            if event.button == 1:
+                self.selected = None
+                if placeholderShipTest.collidepoint(self.main_screen.game.player.board.getCell(0,0).observer.relative_x,self.main_screen.game.player.board.getCell(0,0).observer.relative_y):
+                    print("Choco con la celda") #TESTING con una unica celda la idea seria iterar sobre todas las celdas
+                if not placeholderShipTest.collidepoint(self.main_screen.game.player.board.getCell(0,0).observer.relative_x,self.main_screen.game.player.board.getCell(0,0).observer.relative_y):
+                    placeholderShipTest.x = 0
+                    placeholderShipTest.y = 0
+               
+        elif event.type == pygame.MOUSEMOTION:
+            if self.selected is not None:
+                placeholderShipTest.x = event.pos[0] + self.selected_offset_x
+                placeholderShipTest.y = event.pos[1] + self.selected_offset_y
+                
+        
+        
+               
         
     def mouse_clicked(self, event):
         mouse_x = event.pos[0]
@@ -43,10 +75,8 @@ class ShipSetupScreen:
 
 
     def draw_setup_screen(self):
-
         self.draw_ship_pool(self.ship_pool_coordinates[0], self.ship_pool_coordinates[1])
         self.draw_ships()
-
         self.main_screen.draw_board(self.board_coodinates[0], self.board_coodinates[1])
 
     def get_ship_setup_width(self):
@@ -75,4 +105,4 @@ class ShipSetupScreen:
         self.ship_pool_coordinates = self.get_ship_pool_coordinates()
         self.board_coodinates = self.get_board_coordinates()
 
-    
+
