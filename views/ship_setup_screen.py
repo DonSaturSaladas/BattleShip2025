@@ -1,5 +1,5 @@
 import pygame
-from .view_constants import *
+from views.view_constants import *
 from pygame.locals import *
 
 
@@ -13,6 +13,7 @@ class ShipSetupScreen:
         self.ship_placeholders = self.get_ship_placeholders()
         self.buttons = []
         self.selected_ship = None
+        self.ships_on_board = []
         self.selected_offset_x = 0
         self.selected_offset_y = 0
         
@@ -52,12 +53,15 @@ class ShipSetupScreen:
         if event.button == 1:    #Left Click
             self.selected_ship = self.get_ship_clicked(mouse_x, mouse_y)
             if self.selected_ship:
-                self.selected_offset_x = self.selected_ship.x - event.pos[0]
-                self.selected_offset_y = self.selected_ship.y - event.pos[1]
-        elif event.button == 2: #Middle Click
-            selected_ship = self.get_ship_clicked(mouse_x, mouse_y)
-            if selected_ship:
-                self.change_ship_orientation(selected_ship)
+                if self.selected_ship in self.ships_on_board:
+                    self.ships_on_board.remove(self.selected_ship)
+                self.selected_offset_x = -self.scaled_cell_size / 2
+                self.selected_offset_y = -self.scaled_cell_size / 2
+        elif self.buttons[0].collidepoint(mouse_x, mouse_y): #If click acept button
+                """TODO: We need to pass the placeholders as an [] of cells, create the ships, asign them to the player and put them in the board"""
+                pass
+        elif self.selected_ship and event.button == 2: #Middle Click
+            self.change_ship_orientation(self.selected_ship)
     
     def change_ship_orientation(self, selected_ship):
         temp_width = selected_ship.width
@@ -75,17 +79,34 @@ class ShipSetupScreen:
         return ship_found
                 
     def mouse_released(self, event):
-        if event.button == 1 and self.selected_ship:
-            if self.board_clicked(event.pos[0], event.pos[1]):
+        if event.button == 1 and self.selected_ship is not None:
+            
+            if self.board_clicked(event.pos[0], event.pos[1]) and self.selected_ship is not None :
                 board_coordinates = self.get_pressed_cell(event.pos[0], event.pos[1])
-                self.selected_ship.x = self.board_coodinates[0] + board_coordinates[0] * self.scaled_cell_size
-                self.selected_ship.y = self.board_coodinates[1] + board_coordinates[1] * self.scaled_cell_size
-                self.selected_ship = None
+                new_x = self.board_coodinates[0] + board_coordinates[0] * self.scaled_cell_size
+                new_y = self.board_coodinates[1] + board_coordinates[1] * self.scaled_cell_size
+            
+                if not self.check_colission(self.selected_ship):
+                    self.selected_ship.x = new_x
+                    self.selected_ship.y = new_y
+                    self.ships_on_board.append(self.selected_ship)
+                    self.selected_ship = None
+                else:
+                    self.return_ship_to_pool(self.selected_ship)
             else:
                 self.return_ship_to_pool(self.selected_ship)
     
+    
+    def check_colission(self, rect):
+        collision = False
+        for ship in self.ships_on_board:
+            if rect.colliderect(ship):
+                    collision = True
+                    break
+        return collision
+                
     def board_clicked(self, coordinate_x, coordinate_y):
-        return coordinate_x >= self.board_coodinates[0] and coordinate_x <= self.board_coodinates[0] + ROWS * self.scaled_cell_size
+        return coordinate_x >= self.board_coodinates[0] and coordinate_y <= self.board_coodinates[0] + ROWS * self.scaled_cell_size
 
     def get_pressed_cell(self, coordinate_x, coordinate_y):
         board_x = int((coordinate_x - self.board_coodinates[0]) // self.scaled_cell_size)
@@ -101,12 +122,14 @@ class ShipSetupScreen:
     def get_ship_base_coordinates(self, ship):
         found_ship = False
         ship_index = 0
-        while not found_ship:
+        while not found_ship and ship_index < 4:
             if self.ship_placeholders[ship_index][2] == ship:
                 found_ship = True
             else:
                 ship_index += 1
         return (self.ship_placeholders[ship_index][0], self.ship_placeholders[ship_index][1])
+    
+    
     
     def ship_pool_clicked(self, coordinate_x, coordinate_y):
         x_on_ship_pool = coordinate_x >= self.ship_pool_coordinates[0] and coordinate_x <= self.ship_pool_coordinates[0] + SHIP_POOL_WIDTH * self.scaled_cell_size
@@ -134,18 +157,18 @@ class ShipSetupScreen:
         pool_y = self.ship_pool_coordinates[1]
         cell_size = self.scaled_cell_size
         return [
-            [pool_x + cell_size, pool_y, pygame.Rect(pool_x + cell_size, pool_y, 5 * cell_size, cell_size)],
-            [pool_x + 3 * cell_size / 2, pool_y + 3 * cell_size / 2, pygame.Rect(pool_x + 3 * cell_size / 2, pool_y + 3 * cell_size / 2, 4 * cell_size, cell_size)],
-            [pool_x + 2 * cell_size, pool_y + 3 * cell_size, pygame.Rect(pool_x + 2 * cell_size, pool_y + 3 * cell_size, 3 * cell_size, cell_size)],
-            [pool_x + 2 * cell_size, pool_y + 9 * cell_size / 2, pygame.Rect(pool_x + 2 * cell_size, pool_y + 9 * cell_size / 2, 3 * cell_size, cell_size)],
-            [pool_x + 5 * cell_size / 2, pool_y + 6 * cell_size, pygame.Rect(pool_x + 5 * cell_size / 2, pool_y + 6 * cell_size, 2 * cell_size, cell_size)]
+            [pool_x + self.scaled_cell_size, pool_y, pygame.Rect(pool_x + self.scaled_cell_size, pool_y, 5 * self.scaled_cell_size, self.scaled_cell_size)],
+            [pool_x + 3 * self.scaled_cell_size / 2, pool_y + 3 * self.scaled_cell_size / 2, pygame.Rect(pool_x + 3 * self.scaled_cell_size / 2, pool_y + 3 * self.scaled_cell_size / 2, 4 * self.scaled_cell_size, self.scaled_cell_size)],
+            [pool_x + 2 * self.scaled_cell_size, pool_y + 3 * self.scaled_cell_size, pygame.Rect(pool_x + 2 * self.scaled_cell_size, pool_y + 3 * self.scaled_cell_size, 3 * self.scaled_cell_size, self.scaled_cell_size)],
+            [pool_x + 2 * self.scaled_cell_size, pool_y + 9 * self.scaled_cell_size / 2, pygame.Rect(pool_x + 2 * self.scaled_cell_size, pool_y + 9 * self.scaled_cell_size / 2, 3 * self.scaled_cell_size, self.scaled_cell_size)],
+            [pool_x + 5 * self.scaled_cell_size / 2, pool_y + 6 * self.scaled_cell_size, pygame.Rect(pool_x + 5 * self.scaled_cell_size / 2, pool_y + 6 * self.scaled_cell_size, 2 * self.scaled_cell_size, self.scaled_cell_size)]
         ]
 
 
     def draw_acept_button(self):
-        boardX = self.get_board_coordinates()[0]
-        boardY = self.get_board_coordinates()[1]
-        button = pygame.Rect(boardX +self.scaled_cell_size*ROWS + 2, boardY, 70, 50)
+        poolX = self.get_board_coordinates()[0]
+        poolY = self.get_board_coordinates()[1]
+        button = pygame.Rect(poolX +self.scaled_cell_size*ROWS + 2, poolY, 70, 50)
         pygame.draw.rect(self.window, (255, 255, 255), button)
         
         text_surface_object = self.main_screen.PRIMARY_FONT.render("Start", True, (0,0,0))
