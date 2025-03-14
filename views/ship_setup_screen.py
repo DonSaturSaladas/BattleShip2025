@@ -85,7 +85,7 @@ class ShipSetupScreen:
                 new_x = self.board_coodinates[0] + board_coordinates[0] * self.scaled_cell_size
                 new_y = self.board_coodinates[1] + board_coordinates[1] * self.scaled_cell_size
             
-                if not self.check_colission(self.selected_ship):
+                if not self.check_colission(self.selected_ship) and not self.ship_out_of_board(self.selected_ship):
                     self.selected_ship.x = new_x
                     self.selected_ship.y = new_y
                     self.ships_on_board.append(self.selected_ship)
@@ -103,6 +103,9 @@ class ShipSetupScreen:
                     collision = True
                     break
         return collision
+
+    def ship_out_of_board(self, ship):
+        return ship.x + ship.width > self.board_coodinates[0] + (ROWS + 1/2) * self.scaled_cell_size or ship.y + ship.height > self.board_coodinates[1] + (COLS + 1/2) * self.scaled_cell_size
                 
     def board_clicked(self, coordinate_x, coordinate_y):
         return coordinate_x >= self.board_coodinates[0] and coordinate_y <= self.board_coodinates[0] + ROWS * self.scaled_cell_size
