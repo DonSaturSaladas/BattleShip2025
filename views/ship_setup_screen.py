@@ -80,8 +80,7 @@ class ShipSetupScreen:
                 
     def mouse_released(self, event):
         if event.button == 1 and self.selected_ship is not None:
-            
-            if self.board_clicked(event.pos[0], event.pos[1]) and self.selected_ship is not None :
+            if self.board_clicked(event.pos[0], event.pos[1]):
                 board_coordinates = self.get_pressed_cell(event.pos[0], event.pos[1])
                 new_x = self.board_coodinates[0] + board_coordinates[0] * self.scaled_cell_size
                 new_y = self.board_coodinates[1] + board_coordinates[1] * self.scaled_cell_size
@@ -115,9 +114,21 @@ class ShipSetupScreen:
 
     def return_ship_to_pool(self, ship):
         coordinates = self.get_ship_base_coordinates(ship)
+        self.return_ship_to_base_coordinates(coordinates)
+        self.set_ship_horizontally(ship)
+        self.selected_ship = None
+    
+    def return_ship_to_base_coordinates(self, coordinates):
         self.selected_ship.x = coordinates[0]
         self.selected_ship.y = coordinates[1]
-        self.selected_ship = None
+        
+    def set_ship_horizontally(self, ship):
+        ship_width = self.selected_ship.width
+        ship_height = self.selected_ship.height
+        if ship_width < ship_height:
+            self.selected_ship.width = ship_height
+            self.selected_ship.height = ship_width
+
     
     def get_ship_base_coordinates(self, ship):
         found_ship = False
