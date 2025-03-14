@@ -2,6 +2,7 @@ import pygame
 from .view_constants import *
 from pygame.locals import *
 
+
 class ShipSetupScreen:
     def __init__(self, window, main_screen):
         self.window = window
@@ -10,9 +11,11 @@ class ShipSetupScreen:
         self.ship_pool_coordinates = self.get_ship_pool_coordinates()
         self.board_coodinates = self.get_board_coordinates()
         self.ship_placeholders = self.get_ship_placeholders()
+        self.buttons = []
         self.selected_ship = None
         self.selected_offset_x = 0
         self.selected_offset_y = 0
+        
     
     def run(self):
         self.draw_setup_screen()
@@ -21,6 +24,7 @@ class ShipSetupScreen:
         self.main_screen.draw_board(self.board_coodinates[0], self.board_coodinates[1])
         self.draw_ship_pool(self.ship_pool_coordinates[0], self.ship_pool_coordinates[1])
         self.draw_ships()
+        self.draw_acept_button()
 
     def draw_ship_pool(self, left, top):
         pygame.draw.rect(self.window, (255,255,255), pygame.Rect(left, top, SHIP_POOL_WIDTH * self.scaled_cell_size, SHIP_POOL_HEIGHT * self.scaled_cell_size), width=1)
@@ -50,6 +54,15 @@ class ShipSetupScreen:
             if self.selected_ship:
                 self.selected_offset_x = self.selected_ship.x - event.pos[0]
                 self.selected_offset_y = self.selected_ship.y - event.pos[1]
+        elif event.button == 2: #Middle Click
+            selected_ship = self.get_ship_clicked(mouse_x, mouse_y)
+            if selected_ship:
+                self.change_ship_orientation(selected_ship)
+    
+    def change_ship_orientation(self, selected_ship):
+        temp_width = selected_ship.width
+        selected_ship.width = selected_ship.height
+        selected_ship.height = temp_width
                 
     def get_ship_clicked(self, coordinate_x, coordinate_y):
         ship_found = None
@@ -129,3 +142,14 @@ class ShipSetupScreen:
         ]
 
 
+    def draw_acept_button(self):
+        boardX = self.get_board_coordinates()[0]
+        boardY = self.get_board_coordinates()[1]
+        button = pygame.Rect(boardX +self.scaled_cell_size*ROWS + 2, boardY, 70, 50)
+        pygame.draw.rect(self.window, (255, 255, 255), button)
+        
+        text_surface_object = self.main_screen.PRIMARY_FONT.render("Start", True, (0,0,0))
+        text_rect = text_surface_object.get_rect(center = button.center)
+        self.window.blit(text_surface_object, text_rect)
+        self.buttons.append(button)
+        

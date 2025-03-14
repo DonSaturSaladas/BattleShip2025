@@ -19,6 +19,7 @@ class Main_Screen:
         self.ship_setup_screen = ShipSetupScreen(window, self)
         self.selected_screen = self.ship_setup_screen
         self.game = None
+        self.PRIMARY_FONT = pygame.font.SysFont('arial', 25, True, False)
 
     def run(self):
         self.window.fill((0, 0, 0))
@@ -71,9 +72,9 @@ class Main_Screen:
                     left, top
                 )  # TODO : replace with a way to choose whose board draw (player or opponent)
 
-        pygame.display.update()
 
     def draw_ship(self, lenght, left, top, color):
         pygame.draw.rect(
             self.window, color, pygame.Rect(left, top, lenght * self.scaled_cell_size, self.scaled_cell_size)
         )
+        
