@@ -12,9 +12,10 @@ class Cell:
         self.x = x
         self.y = y
         self.observer = None
+        self.sprites = sprites
         self.actualSprite = sprites[0]
 
-        self.sprites = sprites
+        
         self.hidden = False
         self.hasShip = False
 
@@ -22,7 +23,8 @@ class Cell:
         self.observer = observer
 
     def update(self, left, top):
-        ''''Arguments : left, top: especify the screen position of the board to print the observers in the screen'''
+        ''''Arguments : left, top: especify the screen position of the board to print the observers 
+            in the screen'''
         self.observer.update(left +1, top)
 
     def selected(self):
@@ -31,3 +33,7 @@ class Cell:
             self.update()
             if self.hasShip:
                 self.sprite = self.sprites[2]
+            
+    def changeSprite(self, sprite):
+        self.actualSprite = sprite
+        
