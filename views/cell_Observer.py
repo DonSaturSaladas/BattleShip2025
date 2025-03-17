@@ -13,14 +13,15 @@ class Cell_Observer:
         self.relative_y = self.cell.y
         self.calcPos(0,0)
 
-    def update(self, left, top):
+    def update(self, left = None, top = None):
         self.sprite.path = pygame.transform.scale((self.sprite.getImg()),(self.win.scaled_cell_size -3, self.win.scaled_cell_size-1))
-        
-        self.calcPos(left,top)
+        if left is not None and top is not None:
+            self.calcPos(left,top)
         
         self.win.window.blit(self.sprite.getImg(), (self.relative_x , self.relative_y))
 
 
+    
     def setSprite(self, sprite):
         self.sprite = sprite
 

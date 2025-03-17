@@ -8,7 +8,7 @@ class Player_Entity(ABC):
         self.ships = [] 
 
     @abstractmethod
-    def putShip(self, ship):
+    def put_ship(self, ship):
         self.ships.append(ship)
 
     @abstractmethod

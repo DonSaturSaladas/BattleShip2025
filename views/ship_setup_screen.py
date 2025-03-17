@@ -84,6 +84,11 @@ class ShipSetupScreen:
                         current_placeholder_x += self.scaled_cell_size
                     else:
                         current_placeholder_y += self.scaled_cell_size
+                    
+                self.main_screen.game.create_ship(self.main_screen.game.player ,ship_cells)
+
+                # self.main_screen.change_screen("Game")
+
                         
         
     def change_ship_orientation(self, selected_ship):

@@ -11,12 +11,14 @@ from .view_constants import (
 
 class Main_Screen:
     def __init__(self, window):
+        
         # WIN variables
         self.running = True
         self.window = window
         self.screen_width, self.screen_height = pygame.display.get_surface().get_size()
         self.scale_factor = 1
         self.scaled_cell_size = int(CELL_SIZE * self.scale_factor)
+
         # SCREEN variables
         self.ship_setup_screen = None
         self.game_screen = None
@@ -27,6 +29,7 @@ class Main_Screen:
 
     def run(self):
         self.window.fill((0, 0, 0))
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False

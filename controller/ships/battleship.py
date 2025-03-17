@@ -1,8 +1,8 @@
-from . import ship
+from .ship import Ship
 
-class battleship(ship):
+class Battleship(Ship):
     
-    def __init__(self):
-        super().__init__()
+    def __init__(self, cells):
+        super().__init__(cells)
         
     

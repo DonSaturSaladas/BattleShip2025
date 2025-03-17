@@ -22,10 +22,15 @@ class Cell:
     def registerObserver(self, observer):
         self.observer = observer
 
-    def update(self, left, top):
+    def update(self, left = None, top = None):
         ''''Arguments : left, top: especify the screen position of the board to print the observers 
             in the screen'''
-        self.observer.update(left +1, top)
+        if left is not None and top is not None:
+            self.observer.update(left +1, top)
+        else:
+            print("Boat Drawed")
+            print(f"CORRDS:  {self.x, self.y}")
+            self.observer.update()
 
     def selected(self):
         if self.hidden:
@@ -35,5 +40,6 @@ class Cell:
                 self.sprite = self.sprites[2]
             
     def changeSprite(self, sprite):
+        print("default sprite changed")
         self.actualSprite = sprite
         

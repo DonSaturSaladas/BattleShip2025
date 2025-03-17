@@ -23,6 +23,10 @@ WATER_PATH = pygame.transform.scale(
     (CELL_SIZE - 3, CELL_SIZE -1),
 )
 
+SHIP_TEST_PATH = pygame.transform.scale(
+    (pygame.image.load(os.path.join("assets", "test-ship-img.jpg"))),
+    (CELL_SIZE - 3, CELL_SIZE -1),
+)
 # Font
 
 PRIMARY_FONT2 = None

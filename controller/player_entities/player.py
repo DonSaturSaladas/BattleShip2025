@@ -8,5 +8,6 @@ class Player(Player_Entity):
     def getBoard(self):
         return super().getBoard()
     
-    def putShip(self, ship):
-        return super().putShip(ship)
+    
+    def put_ship(self, ship):
+        return super().put_ship(ship)

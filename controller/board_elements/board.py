@@ -11,7 +11,7 @@ class Board:
         self.createBoard()
     
     def createBoard(self):
-        sprites = [Sprite(WATER_PATH), Sprite()]
+        sprites = [Sprite(WATER_PATH)]
         
         for row in range(ROWS):
             self.cells.append([])
