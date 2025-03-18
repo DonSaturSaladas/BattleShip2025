@@ -4,6 +4,9 @@ from .player_entities.player import Player
 from .factories.ship_factory import Ship_factory
 from views.view_constants import ROWS, COLS
 from views.cell_Observer import Cell_Observer
+from controller.board_elements.cell import Cell
+
+from .ships.carrier import Carrier
 
 
 
@@ -22,8 +25,12 @@ class Game:
                 cell = self.player.board.getCell(row, col)
                 cell.registerObserver(Cell_Observer(self.main_screen ,cell))
 
-    def create_ship(self, player_entity:Player_Entity, cells:[]):
-        ship = self.ship_factory.create_ship(cells)
+    def create_ship(self, player_entity:Player_Entity, cells:list[Cell]):
+        if issubclass(Carrier,self.player.ships.__class__):
+            ship = self.ship_factory.create_ship(cells, "Submarine")
+            print("submarine printed")
+        else:
+            ship = self.ship_factory.create_ship(cells)
         player_entity.put_ship(ship)
         
 

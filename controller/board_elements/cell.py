@@ -28,12 +28,10 @@ class Cell:
         if left is not None and top is not None:
             self.observer.update(left +1, top)
         else:
-            print("Boat Drawed")
-            print(f"CORRDS:  {self.x, self.y}")
+           # print("Boat Drawed")
+           # print(f"CORRDS:  {self.x, self.y}")
             self.observer.update()
         
-        if(self.x == 0 and self.y == 0):
-            print(self.actualSprite)
 
     def selected(self):
         if self.hidden:
@@ -43,6 +41,5 @@ class Cell:
                 self.sprite = self.sprites[2]
             
     def changeSprite(self, sprite):
-        print("default sprite changed")
         self.actualSprite = sprite
         

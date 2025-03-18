@@ -213,7 +213,6 @@ class ShipSetupScreen:
         ]
         
 
-
     def draw_acept_button(self):
         poolX = self.get_board_coordinates()[0]
         poolY = self.get_board_coordinates()[1]
