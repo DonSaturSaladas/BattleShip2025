@@ -31,6 +31,9 @@ class Cell:
             print("Boat Drawed")
             print(f"CORRDS:  {self.x, self.y}")
             self.observer.update()
+        
+        if(self.x == 0 and self.y == 0):
+            print(self.actualSprite)
 
     def selected(self):
         if self.hidden:
