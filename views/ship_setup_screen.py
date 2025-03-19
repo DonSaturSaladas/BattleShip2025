@@ -1,6 +1,8 @@
 import pygame
 from views.view_constants import *
 from pygame.locals import *
+from .button import Button
+from .spritesheet import spritesheet
 
 
 class ShipSetupScreen:
@@ -16,6 +18,8 @@ class ShipSetupScreen:
         self.ships_on_board = []
         self.selected_offset_x = 0
         self.selected_offset_y = 0
+        
+        self.create_buttons()
         
     
     def run(self):
@@ -66,7 +70,11 @@ class ShipSetupScreen:
     
     
     def handle_acept_button_clicked(self, mouse_x, mouse_y):
-       if self.buttons[0].collidepoint(mouse_x, mouse_y): #If click acept button
+        self.buttons[0].update(1)
+        print(self.buttons[0].get_rect().collidepoint(mouse_x, mouse_y))
+        print(f"rect size :  {self.buttons[0].image.get_rect().size}")
+        print( f" rect pos :({self.buttons[0].image.get_rect().x} ,{self.buttons[0].image.get_rect().y})")
+        if self.buttons[0].get_rect().collidepoint(mouse_x, mouse_y): #If click acept button
            
             for placeholder in self.ships_on_board:
                 print((int)(placeholder.width /self.scaled_cell_size))
@@ -107,6 +115,10 @@ class ShipSetupScreen:
         return ship_found
                 
     def mouse_released(self, event):
+        mouse_x = event.pos[0]
+        mouse_y = event.pos[1]
+        if event.button == 1 and self.buttons[0].get_rect().collidepoint(mouse_x, mouse_y):
+            self.buttons[0].update(0)
         if event.button == 1 and self.selected_ship is not None:
             if self.board_clicked(event.pos[0], event.pos[1]):
                 board_coordinates = self.get_pressed_cell_coords(event.pos[0], event.pos[1])
@@ -212,9 +224,27 @@ class ShipSetupScreen:
             [pool_x + 5 * self.scaled_cell_size / 2, pool_y + 6 * self.scaled_cell_size, pygame.Rect(pool_x + 5 * self.scaled_cell_size / 2, pool_y + 6 * self.scaled_cell_size, 2 * self.scaled_cell_size, self.scaled_cell_size)]
         ]
         
+        
+    def create_buttons(self):
+        poolX = self.get_board_coordinates()[0]
+        poolY = self.get_board_coordinates()[1]
+        
+        ss = spritesheet(ACCEPT_BUTTON_SPRITESHEET_PATH)
+        
+        sprites = ss.images_at(((0,0,346,208), (348,0,346,208)))
+        
+        button = Button(sprites, poolX +self.scaled_cell_size*ROWS , poolY, 70, 50, self.main_screen )
+        
+        self.buttons.append(button)
+        
 
     def draw_acept_button(self):
-        poolX = self.get_board_coordinates()[0]
+        
+        
+        self.buttons[0].draw()
+        
+        
+        """poolX = self.get_board_coordinates()[0]
         poolY = self.get_board_coordinates()[1]
         button = pygame.Rect(poolX +self.scaled_cell_size*ROWS + 2, poolY, 70, 50)
         pygame.draw.rect(self.window, (255, 255, 255), button)
@@ -222,5 +252,5 @@ class ShipSetupScreen:
         text_surface_object = self.main_screen.PRIMARY_FONT.render("Start", True, (0,0,0))
         text_rect = text_surface_object.get_rect(center = button.center)
         self.window.blit(text_surface_object, text_rect)
-        self.buttons.append(button)
+        self.buttons.append(button)"""
         

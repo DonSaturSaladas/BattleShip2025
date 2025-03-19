@@ -42,7 +42,7 @@ class Main_Screen:
                 )
                 self.screen_width = nWidth
                 self.screen_height = nHeight
-                self.ship_setup_screen.screen_size_changed()
+                self.selected_screen.screen_size_changed()
                 
             self.selected_screen.handle_event(event)
 
@@ -66,7 +66,7 @@ class Main_Screen:
     
     
     def setup_screens(self):
-        #self.menu_screen = MenuScreen(window, self)
+        # self.menu_screen = MenuScreen(window, self)
         self.ship_setup_screen = ShipSetupScreen(self.window, self)
         # self.game_screen = Game_Screen(window, self)
         # self.game_over_screen = GameOverScreen(window, self)

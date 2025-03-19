@@ -1,6 +1,8 @@
 import pygame
 import os
-import sys
+
+
+
 
 BOARD_SEPARATION = 5
 
@@ -27,10 +29,11 @@ SHIP_TEST_PATH = pygame.transform.scale(
     (pygame.image.load(os.path.join("assets", "test-ship-img.jpg"))),
     (CELL_SIZE - 3, CELL_SIZE -1),
 )
+
+ACCEPT_BUTTON_SPRITESHEET_PATH = "assets/Buttons/Start-Metal-Button.png"
+
 # Font
 
-PRIMARY_FONT2 = None
 
-def initialize_fonts():
-    global PRIMARY_FONT2
-    PRIMARY_FONT2 = pygame.font.SysFont('arial', 25, True, False)
+
+
