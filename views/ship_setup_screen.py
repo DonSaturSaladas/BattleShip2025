@@ -3,6 +3,7 @@ from views.view_constants import *
 from pygame.locals import *
 from .button import Button
 from .spritesheet import spritesheet
+from .ship_placeholder import Ship_Placeholder
 
 
 class ShipSetupScreen:
@@ -35,11 +36,11 @@ class ShipSetupScreen:
         pygame.draw.rect(self.window, (255,255,255), pygame.Rect(left, top, SHIP_POOL_WIDTH * self.scaled_cell_size, SHIP_POOL_HEIGHT * self.scaled_cell_size), width=1)
     
     def draw_ships(self):
-        pygame.draw.rect(self.window, (94, 100, 114), self.ship_placeholders[0][2])
-        pygame.draw.rect(self.window, (255,166,158), self.ship_placeholders[1][2])
-        pygame.draw.rect(self.window, (240,247,244), self.ship_placeholders[2][2])
-        pygame.draw.rect(self.window, (13, 6, 48), self.ship_placeholders[3][2])
-        pygame.draw.rect(self.window, (88,153,226), self.ship_placeholders[4][2])
+        pygame.draw.rect(self.window, (94, 100, 114), self.ship_placeholders[0].rectangle)
+        pygame.draw.rect(self.window, (255,166,158), self.ship_placeholders[1].rectangle)
+        pygame.draw.rect(self.window, (240,247,244), self.ship_placeholders[2].rectangle)
+        pygame.draw.rect(self.window, (13, 6, 48), self.ship_placeholders[3].rectangle)
+        pygame.draw.rect(self.window, (88,153,226), self.ship_placeholders[4].rectangle)
     
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -108,7 +109,7 @@ class ShipSetupScreen:
         ship_found = None
         ship_index = 0
         while not ship_found and ship_index < 5:
-            ship = self.ship_placeholders[ship_index][2]
+            ship = self.ship_placeholders[ship_index].rectangle
             if ship.collidepoint(coordinate_x, coordinate_y):
                 ship_found = ship
             ship_index += 1
@@ -126,6 +127,7 @@ class ShipSetupScreen:
                 new_y = self.board_coodinates[1] + board_coordinates[1] * self.scaled_cell_size
             
                 if not self.check_colission(self.selected_ship) and not self.ship_out_of_board(self.selected_ship):
+                    self.get_ship_placeholder(self.selected_ship).set_board_coordinates(board_coordinates[0], board_coordinates[1])
                     self.selected_ship.x = new_x
                     self.selected_ship.y = new_y
                     self.ships_on_board.append(self.selected_ship)
@@ -135,6 +137,17 @@ class ShipSetupScreen:
             else:
                 self.return_ship_to_pool(self.selected_ship)
     
+    def get_ship_placeholder(self, ship_rectangle):
+        found_ship = False
+        ship_index = 0
+        ship_placeholder = None
+        while not found_ship and ship_index <= 4:
+            ship_placeholder = self.ship_placeholders[ship_index]
+            if ship_placeholder.rectangle == ship_rectangle:
+                found_ship = True
+            else:
+                ship_index += 1
+        return ship_placeholder
     
     def check_colission(self, rect):
         collision = False
@@ -160,34 +173,22 @@ class ShipSetupScreen:
         return self.main_screen.game.player.getBoard().getCell(x,y)
 
     def return_ship_to_pool(self, ship):
-        coordinates = self.get_ship_base_coordinates(ship)
-        self.return_ship_to_base_coordinates(coordinates)
+        self.get_ship_placeholder(self.selected_ship).board_coordinates = None
+        self.return_ship_to_base_coordinates(ship)
         self.set_ship_horizontally(ship)
         self.selected_ship = None
     
-    def return_ship_to_base_coordinates(self, coordinates):
-        self.selected_ship.x = coordinates[0]
-        self.selected_ship.y = coordinates[1]
+    def return_ship_to_base_coordinates(self, ship):
+        ship_placeholder = self.get_ship_placeholder(ship)
+        self.selected_ship.x = ship_placeholder.base_x
+        self.selected_ship.y = ship_placeholder.base_y
         
     def set_ship_horizontally(self, ship):
         ship_width = self.selected_ship.width
         ship_height = self.selected_ship.height
         if ship_width < ship_height:
             self.selected_ship.width = ship_height
-            self.selected_ship.height = ship_width
-
-    
-    def get_ship_base_coordinates(self, ship):
-        found_ship = False
-        ship_index = 0
-        while not found_ship and ship_index < 4:
-            if self.ship_placeholders[ship_index][2] == ship:
-                found_ship = True
-            else:
-                ship_index += 1
-        return (self.ship_placeholders[ship_index][0], self.ship_placeholders[ship_index][1])
-    
-    
+            self.selected_ship.height = ship_width    
     
     def ship_pool_clicked(self, coordinate_x, coordinate_y):
         x_on_ship_pool = coordinate_x >= self.ship_pool_coordinates[0] and coordinate_x <= self.ship_pool_coordinates[0] + SHIP_POOL_WIDTH * self.scaled_cell_size
@@ -198,6 +199,8 @@ class ShipSetupScreen:
         self.scaled_cell_size = self.main_screen.scaled_cell_size
         self.ship_pool_coordinates = self.get_ship_pool_coordinates()
         self.board_coodinates = self.get_board_coordinates()
+        self.update_ship_sizes()
+        self.update_ship_coordinates()
 
     def get_ship_setup_width(self):
         return ROWS * self.scaled_cell_size + BOARD_SEPARATION_TO_SHIPS + SHIP_POOL_WIDTH * self.scaled_cell_size
@@ -210,6 +213,47 @@ class ShipSetupScreen:
         return (self.ship_pool_coordinates[0] + SHIP_POOL_WIDTH * self.scaled_cell_size + BOARD_SEPARATION_TO_SHIPS,
                 (self.main_screen.screen_height - COLS * self.scaled_cell_size) / 2)
     
+    def update_ship_coordinates(self):
+        for ship_placeholder in self.ship_placeholders:
+            if ship_placeholder.board_coordinates is not None:
+                board_x, board_y = ship_placeholder.board_coordinates
+                ship_placeholder.rectangle.left = self.board_coodinates[0] + board_x * self.scaled_cell_size
+                ship_placeholder.rectangle.top = self.board_coodinates[1] + board_y * self.scaled_cell_size
+            else:
+                ship_placeholder.rectangle.left = ship_placeholder.base_x
+                ship_placeholder.rectangle.top = ship_placeholder.base_y
+
+
+    def update_ship_sizes(self):
+        pool_x = self.ship_pool_coordinates[0]
+        pool_y = self.ship_pool_coordinates[1]
+
+        self.ship_placeholders[0].base_x = pool_x + self.scaled_cell_size
+        self.ship_placeholders[0].base_y = pool_y
+        self.update_individual_ship_size(self.ship_placeholders[0].rectangle, 5)
+        
+        self.ship_placeholders[1].base_x = pool_x + 3 * self.scaled_cell_size / 2
+        self.ship_placeholders[1].base_y = pool_y + 3 * self.scaled_cell_size / 2
+        self.update_individual_ship_size(self.ship_placeholders[1].rectangle, 4)
+
+        self.ship_placeholders[2].base_x = pool_x + 2 * self.scaled_cell_size
+        self.ship_placeholders[2].base_y = pool_y + 3 * self.scaled_cell_size
+        self.update_individual_ship_size(self.ship_placeholders[2].rectangle, 3)
+
+        self.ship_placeholders[3].base_x = pool_x + 2 * self.scaled_cell_size
+        self.ship_placeholders[3].base_y = pool_y + 9 * self.scaled_cell_size / 2
+        self.update_individual_ship_size(self.ship_placeholders[3].rectangle, 3)
+
+        self.ship_placeholders[4].base_x = pool_x + 5 * self.scaled_cell_size / 2
+        self.ship_placeholders[4].base_y = pool_y + 6 * self.scaled_cell_size
+        self.update_individual_ship_size(self.ship_placeholders[4].rectangle, 2)
+
+    def update_individual_ship_size(self, ship, ship_blocks):
+        big_side = ship_blocks * self.scaled_cell_size
+        orientation = 'h' if ship.width > ship.height else 'v'
+        ship.width = big_side if orientation == 'h' else self.scaled_cell_size
+        ship.height = big_side if orientation == 'v' else self.scaled_cell_size
+
     def get_ship_placeholders(self):
         """[0] y [1] contienen la posicion original del placeholder"""
         pool_x = self.ship_pool_coordinates[0]
@@ -217,11 +261,11 @@ class ShipSetupScreen:
         cell_size = self.scaled_cell_size
         
         return [
-            [pool_x + self.scaled_cell_size, pool_y, pygame.Rect(pool_x + self.scaled_cell_size, pool_y, 5 * self.scaled_cell_size, self.scaled_cell_size)],
-            [pool_x + 3 * self.scaled_cell_size / 2, pool_y + 3 * self.scaled_cell_size / 2, pygame.Rect(pool_x + 3 * self.scaled_cell_size / 2, pool_y + 3 * self.scaled_cell_size / 2, 4 * self.scaled_cell_size, self.scaled_cell_size)],
-            [pool_x + 2 * self.scaled_cell_size, pool_y + 3 * self.scaled_cell_size, pygame.Rect(pool_x + 2 * self.scaled_cell_size, pool_y + 3 * self.scaled_cell_size, 3 * self.scaled_cell_size, self.scaled_cell_size)],
-            [pool_x + 2 * self.scaled_cell_size, pool_y + 9 * self.scaled_cell_size / 2, pygame.Rect(pool_x + 2 * self.scaled_cell_size, pool_y + 9 * self.scaled_cell_size / 2, 3 * self.scaled_cell_size, self.scaled_cell_size)],
-            [pool_x + 5 * self.scaled_cell_size / 2, pool_y + 6 * self.scaled_cell_size, pygame.Rect(pool_x + 5 * self.scaled_cell_size / 2, pool_y + 6 * self.scaled_cell_size, 2 * self.scaled_cell_size, self.scaled_cell_size)]
+            Ship_Placeholder((pool_x + self.scaled_cell_size, pool_y), 5, self.scaled_cell_size),
+            Ship_Placeholder((pool_x + 3 * self.scaled_cell_size / 2, pool_y + 3 * self.scaled_cell_size / 2), 4, self.scaled_cell_size),
+            Ship_Placeholder((pool_x + 2 * self.scaled_cell_size, pool_y + 3 * self.scaled_cell_size), 3, self.scaled_cell_size),
+            Ship_Placeholder((pool_x + 2 * self.scaled_cell_size, pool_y + 9 * self.scaled_cell_size / 2), 3, self.scaled_cell_size),
+            Ship_Placeholder((pool_x + 5 * self.scaled_cell_size / 2, pool_y + 6 * self.scaled_cell_size), 2, self.scaled_cell_size)
         ]
         
         
