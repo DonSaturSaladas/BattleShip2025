@@ -14,7 +14,7 @@ class Ship_factory:
             2: Destroyer  
         }
     
-    def create_ship(self, cells:[], ship_type = None):
+    def create_ship(self, cells, ship_type = None):
         ship_size = len(cells)
         if  ship_size not in self.ship_clases:
             raise ValueError(f"No existe un barco de esa longitud {ship_size}")
