@@ -7,9 +7,10 @@ class Ship():
     
     def __init__(self, cells): 
         self.parts: list[Cell]  = cells
-        status = "hidden"
-        sunked = False
+        self.status = "hidden"
+        self.sunked = False
         self.init_ship_parts()
+        self.hits = 0
         
         
     def init_ship_parts(self):
@@ -18,5 +19,18 @@ class Ship():
             cell.hasShip = True
             cell.changeSprite(Sprite(SHIP_TEST_PATH))
             cell.update()
-        
-        
+    
+    def has_cell(self, cell):
+        has_cell = False
+        part_index = 0
+        while not has_cell and part_index < len(self.parts):
+            if cell == self.parts[part_index]:
+                has_cell = True
+            part_index += 1
+        return has_cell
+
+    def hit(self, cell):
+        self.hits += 1
+        if self.hits == len(self.parts):
+            self.sunked = True
+            print(f'Size {len(self.parts)} sunked')

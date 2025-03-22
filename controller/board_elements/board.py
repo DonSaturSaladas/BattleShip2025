@@ -21,8 +21,7 @@ class Board:
     def getCell(self, x, y):
         return self.cells[y][x]
 
-    def shoot_cell(self, cell_x, cell_y):
-        cell = self.getCell(cell_x, cell_y)
+    def shoot_cell(self, cell):
         cell.selected()
     
     #debug method

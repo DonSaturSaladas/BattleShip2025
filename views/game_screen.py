@@ -57,11 +57,10 @@ class GameScreen:
         return cell.hidden
     
     def shoot_cell(self, coordinates, player_entity):
-        player_entity.board.shoot_cell(coordinates[0], coordinates[1])
+        player_entity.shoot_cell(coordinates[0], coordinates[1])
     
     def change_current_player(self):
         self.current_player = 0 if self.current_player == 1 else 1
-        print("Player turn" if self.current_player == 0 else "Enemy turn")
     
 
     def get_players_board_coordinates(self):
