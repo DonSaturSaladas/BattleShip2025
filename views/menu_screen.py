@@ -38,9 +38,10 @@ class Menu_screen:
         
         if (self.animation_finished or self.main_screen.first_iteration ):
             self.draw_background_image()
-            
-        self.animate_logo_background()
+        
         self.draw_buttons()
+        self.animate_logo_background()
+        
         
         self.window.blit(self.menu_surface, (0,0))
         pygame.display.flip()
@@ -66,19 +67,30 @@ class Menu_screen:
         mouse_y = event.pos[1]
     
         self.handle_acept_button_clicked(mouse_x, mouse_y)
-    
-    def handle_acept_button_clicked(self, mouse_x, mouse_y):
-        if self.buttons[0].get_rect().collidepoint(mouse_x, mouse_y): #If click acept button
-            self.buttons[0].update(1)
-    
-    
-    
+        
     def mouse_released(self, event):
         mouse_x = event.pos[0]
         mouse_y = event.pos[1]
         
-        if event.button == 1 and self.buttons[0].get_rect().collidepoint(mouse_x, mouse_y):
+        self.handle_acept_button_released(mouse_x, mouse_y)
+        
+    
+    
+    def handle_acept_button_clicked(self, mouse_x, mouse_y):
+        if self.buttons[0].get_rect().collidepoint(mouse_x, mouse_y): #If click acept button
+            self.buttons[0].update(1)
+            
+    def handle_acept_button_released(self, mouse_x, mouse_y):
+        if self.buttons[0].get_rect().collidepoint(mouse_x, mouse_y):
             self.buttons[0].update(0)
+            
+            self.main_screen.change_screen("Setup")
+            
+    
+    
+   
+        
+        
             
             
 
@@ -139,12 +151,14 @@ class Menu_screen:
     
     def draw_buttons(self):
         self.draw_start_button()
-        # draw_exit_button()
+        self.draw_exit_button()
         # draw_options_button()
         # draw_sound_slider_button()
         
     def draw_start_button(self):
         self.buttons[0].draw()
+
+        
     
     def create_start_button(self):
         
