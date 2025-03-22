@@ -28,7 +28,7 @@ class ShipSetupScreen:
         self.draw_setup_screen()
 
     def draw_setup_screen(self):
-        self.main_screen.draw_board(self.board_coodinates[0], self.board_coodinates[1])
+        self.main_screen.draw_board(self.board_coodinates[0], self.board_coodinates[1], self.main_screen.game.player.board)
         self.draw_ship_pool(self.ship_pool_coordinates[0], self.ship_pool_coordinates[1])
         self.draw_ships()
         self.draw_acept_button()
@@ -81,7 +81,7 @@ class ShipSetupScreen:
                     ship_cells = []
                     # Nos quedamos con el valor mas grande para saber la orientacion
                     orientation = "H" if placeholder.width > placeholder.height else "V"
-                    lenght = (int) (placeholder.width / self.scaled_cell_size )if placeholder.width > placeholder.height else (int)(placeholder.height/self.scaled_cell_size)
+                    lenght = (int) (placeholder.width / self.scaled_cell_size )if orientation == "H" else (int)(placeholder.height/self.scaled_cell_size)
                     current_placeholder_x = placeholder.x
                     current_placeholder_y = placeholder.y
                     for i in range(lenght):
@@ -94,8 +94,8 @@ class ShipSetupScreen:
                             current_placeholder_y += self.scaled_cell_size
                         
                     self.main_screen.game.create_ship(self.main_screen.game.player ,ship_cells)
-
-                    # self.main_screen.change_screen("Game")
+                self.main_screen.game.player.board.print_board()
+                self.main_screen.change_screen("Game")
 
                         
         

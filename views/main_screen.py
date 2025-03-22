@@ -1,5 +1,6 @@
 import pygame
 from .ship_setup_screen import ShipSetupScreen
+from .game_screen import GameScreen
 from .menu_screen import Menu_screen
 from .view_constants import (
     CELL_SIZE,
@@ -29,8 +30,14 @@ class Main_Screen:
         self.game = None
         self.PRIMARY_FONT = pygame.font.SysFont('arial', 25, True, False)
 
+    def set_game(self, game):
+        self.game = game
+        self.game_screen.game = game
+
     def run(self):
-        
+        self.window.fill((0,0,0,0))
+
+        self.selected_screen.run()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
@@ -43,14 +50,17 @@ class Main_Screen:
                 )
                 self.screen_width = nWidth
                 self.screen_height = nHeight
-                self.selected_screen.screen_size_changed()
+                self.screen_size_changed()
                 
             self.selected_screen.handle_event(event)
 
-        self.selected_screen.run()
         self.first_iteration = False
         pygame.display.update()
 
+    def screen_size_changed(self):
+        self.ship_setup_screen.screen_size_changed()
+        self.game_screen.screen_size_changed()
+        
     def is_running(self):
         return self.running
 
@@ -70,13 +80,13 @@ class Main_Screen:
     def setup_screens(self):
         self.menu_screen = Menu_screen(self.window, self)
         self.ship_setup_screen = ShipSetupScreen(self.window, self)
-        # self.game_screen = Game_Screen(window, self)
+        self.game_screen = GameScreen(self.window, self)
         # self.game_over_screen = GameOverScreen(window, self)
         # self.leaderboard_screen = LeaderBoardScreen(window, self)
         self.selected_screen = self.menu_screen #Later change to menu screen
         
         
-    def draw_board(self, left, top):
+    def draw_board(self, left, top, board=None):
         board_width = ROWS * self.scaled_cell_size
         board_height = COLS * self.scaled_cell_size
 
@@ -100,9 +110,10 @@ class Main_Screen:
                     width=1,
                 )
 
-                self.game.player.board.getCell(row, col).update(
-                    left, top
-                )  # TODO : replace with a way to choose whose board draw (player or opponent)
+                if board:
+                    board.getCell(row, col).update(
+                        left, top
+                    )  # TODO : replace with a way to choose whose board draw (player or opponent)
 
 
     """def draw_ship(self, lenght, left, top, color):

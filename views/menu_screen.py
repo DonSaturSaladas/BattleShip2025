@@ -32,7 +32,6 @@ class Menu_screen:
         
                 
     def run(self):
-        self.menu_surface.fill((0,0,0,0))
     
         
         
@@ -151,7 +150,7 @@ class Menu_screen:
     
     def draw_buttons(self):
         self.draw_start_button()
-        self.draw_exit_button()
+        #self.draw_exit_button()
         # draw_options_button()
         # draw_sound_slider_button()
         
