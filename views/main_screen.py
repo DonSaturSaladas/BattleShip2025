@@ -50,13 +50,17 @@ class Main_Screen:
                 )
                 self.screen_width = nWidth
                 self.screen_height = nHeight
-                self.selected_screen.screen_size_changed()
+                self.screen_size_changed()
                 
             self.selected_screen.handle_event(event)
 
         self.first_iteration = False
         pygame.display.update()
 
+    def screen_size_changed(self):
+        self.ship_setup_screen.screen_size_changed()
+        self.game_screen.screen_size_changed()
+        
     def is_running(self):
         return self.running
 
