@@ -1,7 +1,7 @@
 import pygame
 from views.view_constants import *
 from pygame.locals import *
-from .button import Button
+from .observers import Button_observer
 from .spritesheet import spritesheet
 from .ship_placeholder import Ship_Placeholder
 
@@ -24,6 +24,7 @@ class ShipSetupScreen:
         
     
     def run(self):
+        self.window.fill((0, 0, 0))
         self.draw_setup_screen()
 
     def draw_setup_screen(self):
@@ -63,40 +64,38 @@ class ShipSetupScreen:
                 self.selected_offset_x = -self.scaled_cell_size / 2
                 self.selected_offset_y = -self.scaled_cell_size / 2
             
-            if(len(self.ship_placeholders) ==  len(self.ships_on_board)):
-                self.handle_acept_button_clicked(mouse_x, mouse_y)
+
+            self.handle_acept_button_clicked(mouse_x, mouse_y)
                         
         elif self.selected_ship and event.button == 3: #Middle Click
             self.change_ship_orientation(self.selected_ship)
     
     
     def handle_acept_button_clicked(self, mouse_x, mouse_y):
-        self.buttons[0].update(1)
-        print(self.buttons[0].get_rect().collidepoint(mouse_x, mouse_y))
-        print(f"rect size :  {self.buttons[0].image.get_rect().size}")
-        print( f" rect pos :({self.buttons[0].image.get_rect().x} ,{self.buttons[0].image.get_rect().y})")
+        
         if self.buttons[0].get_rect().collidepoint(mouse_x, mouse_y): #If click acept button
-           
-            for placeholder in self.ships_on_board:
-                print((int)(placeholder.width /self.scaled_cell_size))
-                ship_cells = []
-                # Nos quedamos con el valor mas grande para saber la orientacion
-                orientation = "H" if placeholder.width > placeholder.height else "V"
-                lenght = (int) (placeholder.width / self.scaled_cell_size )if orientation == "H" else (int)(placeholder.height/self.scaled_cell_size)
-                current_placeholder_x = placeholder.x
-                current_placeholder_y = placeholder.y
-                for i in range(lenght):
-                    print(self.get_pressed_cell(current_placeholder_x,current_placeholder_y))
-                    ship_cells.append(self.get_pressed_cell(current_placeholder_x,current_placeholder_y))
-                    
-                    if orientation == "H":
-                        current_placeholder_x += self.scaled_cell_size
-                    else:
-                        current_placeholder_y += self.scaled_cell_size
-                    
-                self.main_screen.game.create_ship(self.main_screen.game.player ,ship_cells)
-            self.main_screen.game.player.board.print_board()
-            self.main_screen.change_screen("Game")
+            self.buttons[0].update(1)
+            if(len(self.ship_placeholders) ==  len(self.ships_on_board)):
+                for placeholder in self.ships_on_board:
+                    print((int)(placeholder.width /self.scaled_cell_size))
+                    ship_cells = []
+                    # Nos quedamos con el valor mas grande para saber la orientacion
+                    orientation = "H" if placeholder.width > placeholder.height else "V"
+                    lenght = (int) (placeholder.width / self.scaled_cell_size )if orientation == "H" else (int)(placeholder.height/self.scaled_cell_size)
+                    current_placeholder_x = placeholder.x
+                    current_placeholder_y = placeholder.y
+                    for i in range(lenght):
+                        print(self.get_pressed_cell(current_placeholder_x,current_placeholder_y))
+                        ship_cells.append(self.get_pressed_cell(current_placeholder_x,current_placeholder_y))
+                        
+                        if orientation == "H":
+                            current_placeholder_x += self.scaled_cell_size
+                        else:
+                            current_placeholder_y += self.scaled_cell_size
+                        
+                    self.main_screen.game.create_ship(self.main_screen.game.player ,ship_cells)
+                self.main_screen.game.player.board.print_board()
+                self.main_screen.change_screen("Game")
 
                         
         
@@ -118,8 +117,10 @@ class ShipSetupScreen:
     def mouse_released(self, event):
         mouse_x = event.pos[0]
         mouse_y = event.pos[1]
+        
         if event.button == 1 and self.buttons[0].get_rect().collidepoint(mouse_x, mouse_y):
             self.buttons[0].update(0)
+            
         if event.button == 1 and self.selected_ship is not None:
             if self.board_clicked(event.pos[0], event.pos[1]):
                 board_coordinates = self.get_pressed_cell_coords(event.pos[0], event.pos[1])
@@ -258,7 +259,6 @@ class ShipSetupScreen:
         """[0] y [1] contienen la posicion original del placeholder"""
         pool_x = self.ship_pool_coordinates[0]
         pool_y = self.ship_pool_coordinates[1]
-        cell_size = self.scaled_cell_size
         
         return [
             Ship_Placeholder((pool_x + self.scaled_cell_size, pool_y), 5, self.scaled_cell_size),
@@ -270,14 +270,16 @@ class ShipSetupScreen:
         
         
     def create_buttons(self):
-        poolX = self.get_board_coordinates()[0]
-        poolY = self.get_board_coordinates()[1]
+        self.create_acept_button()
         
-        ss = spritesheet(ACCEPT_BUTTON_SPRITESHEET_PATH)
         
-        sprites = ss.images_at(((0,0,346,208), (348,0,346,208)))
+    def create_acept_button(self):
+        poolX = self.get_ship_pool_coordinates()[0]
+        poolY = self.get_ship_pool_coordinates()[1]
         
-        button = Button(sprites, poolX +self.scaled_cell_size*ROWS , poolY, 70, 50, self.main_screen )
+        left = poolX + (SHIP_POOL_WIDTH*CELL_SIZE)/2
+        top = poolY-60
+        button = Button_observer(ACCEPT_BUTTON_SPRITESHEET_PATH, left , top , self.main_screen, self.window)
         
         self.buttons.append(button)
         

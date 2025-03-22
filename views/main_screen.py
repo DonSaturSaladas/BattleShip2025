@@ -1,6 +1,7 @@
 import pygame
 from .ship_setup_screen import ShipSetupScreen
 from .game_screen import GameScreen
+from .menu_screen import Menu_screen
 from .view_constants import (
     CELL_SIZE,
     ROWS,
@@ -25,6 +26,7 @@ class Main_Screen:
         self.game_screen = None
         self.setup_screens()
         
+        self.first_iteration = True
         self.game = None
         self.PRIMARY_FONT = pygame.font.SysFont('arial', 25, True, False)
 
@@ -33,8 +35,9 @@ class Main_Screen:
         self.game_screen.game = game
 
     def run(self):
-        self.window.fill((0, 0, 0))
+        self.window.fill((0,0,0,0))
 
+        self.selected_screen.run()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
@@ -51,7 +54,7 @@ class Main_Screen:
                 
             self.selected_screen.handle_event(event)
 
-        self.selected_screen.run()
+        self.first_iteration = False
         pygame.display.update()
 
     def is_running(self):
@@ -71,12 +74,12 @@ class Main_Screen:
     
     
     def setup_screens(self):
-        # self.menu_screen = MenuScreen(window, self)
+        self.menu_screen = Menu_screen(self.window, self)
         self.ship_setup_screen = ShipSetupScreen(self.window, self)
         self.game_screen = GameScreen(self.window, self)
         # self.game_over_screen = GameOverScreen(window, self)
         # self.leaderboard_screen = LeaderBoardScreen(window, self)
-        self.selected_screen = self.ship_setup_screen #Later change to menu screen
+        self.selected_screen = self.menu_screen #Later change to menu screen
         
         
     def draw_board(self, left, top, board=None):
