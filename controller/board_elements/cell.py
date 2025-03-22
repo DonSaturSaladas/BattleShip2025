@@ -34,11 +34,10 @@ class Cell:
         
 
     def selected(self):
-        if self.hidden:
+        if True:#self.hidden:
             self.hidden = False
+            self.actualSprite = self.sprites[1]
             self.update()
-            if self.hasShip:
-                self.sprite = self.sprites[2]
             
     def changeSprite(self, sprite):
         self.actualSprite = sprite

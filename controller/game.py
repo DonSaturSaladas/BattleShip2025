@@ -13,7 +13,7 @@ from .ships.carrier import Carrier
 class Game:
     def __init__(self, main_screen):
         self.player = Player()
-        # self.opponent_ai = Opponent_ai()
+        self.opponent_ai = Player()
         self.main_screen = main_screen
         self.setBoardCellsObserver()
         self.ship_factory = Ship_factory()
@@ -22,8 +22,10 @@ class Game:
         """'creates the observers of the cells and attaches them to their respective cells"""
         for row in range(ROWS):
             for col in range(COLS):
-                cell = self.player.board.getCell(row, col)
-                cell.registerObserver(Cell_Observer(self.main_screen ,cell))
+                player_cell = self.player.board.getCell(row, col)
+                player_cell.registerObserver(Cell_Observer(self.main_screen , player_cell))
+                enemy_cell = self.opponent_ai.board.getCell(row, col)
+                enemy_cell.registerObserver(Cell_Observer(self.main_screen , enemy_cell))
 
     def create_ship(self, player_entity:Player_Entity, cells:list[Cell]):
         if issubclass(Carrier,self.player.ships.__class__):
