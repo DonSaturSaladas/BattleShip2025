@@ -26,15 +26,12 @@ class Menu_screen:
     def setup_screen_objects(self):
         self.create_background_image()
         self.create_background_logo_image()  
-        self.create_start_button()
-        self.draw_background_image()
+        self.create_buttons()
         
         
                 
     def run(self):
     
-        
-        
         if (self.animation_finished or self.main_screen.first_iteration ):
             self.draw_background_image()
         
@@ -64,35 +61,40 @@ class Menu_screen:
     def mouse_clicked(self, event):
         mouse_x = event.pos[0]
         mouse_y = event.pos[1]
-    
-        self.handle_acept_button_clicked(mouse_x, mouse_y)
+        
+        if event.button == 1:
+            self.handle_button_clicked(mouse_x, mouse_y)
         
     def mouse_released(self, event):
         mouse_x = event.pos[0]
         mouse_y = event.pos[1]
         
-        self.handle_acept_button_released(mouse_x, mouse_y)
+        if event.button == 1:
+            self.handle_button_released(mouse_x, mouse_y)
         
     
     
-    def handle_acept_button_clicked(self, mouse_x, mouse_y):
+    def handle_button_clicked(self, mouse_x, mouse_y):
         if self.buttons[0].get_rect().collidepoint(mouse_x, mouse_y): #If click acept button
             self.buttons[0].update(1)
             
-    def handle_acept_button_released(self, mouse_x, mouse_y):
+        if self.buttons[1].get_rect().collidepoint(mouse_x, mouse_y): #If click exit button
+            self.buttons[1].update(1)
+        
+        
+        
+    def handle_button_released(self, mouse_x, mouse_y):
         if self.buttons[0].get_rect().collidepoint(mouse_x, mouse_y):
             self.buttons[0].update(0)
-            
             self.main_screen.change_screen("Setup")
             
-    
-    
-   
+        if self.buttons[1].get_rect().collidepoint(mouse_x, mouse_y):
+            self.buttons[1].update(0)
+            self.main_screen.running = False
         
         
             
             
-
     def screen_size_changed(self): 
         width = BASE_SCREEN_WIDTH * self.main_screen.scale_factor
         height = BASE_SCREEN_HEIGHT *self.main_screen.scale_factor
@@ -101,7 +103,6 @@ class Menu_screen:
         #TODO: Actualizar los valores de father_surface de todas las superficies de la pantalla por el nuevo menu_surface 
     
     def animate_logo_background(self):
-        
         
         background = self.backgrounds[1]
         current_time = pygame.time.get_ticks()
@@ -144,25 +145,39 @@ class Menu_screen:
     
     def create_buttons(self):
         self.create_start_button()
-        # create_exit_button()
+        self.create_exit_button()
         # create_options_button()
         # create_sound_slider_button()
     
     def draw_buttons(self):
         self.draw_start_button()
-        #self.draw_exit_button()
+        self.draw_exit_button()
         # draw_options_button()
         # draw_sound_slider_button()
         
     def draw_start_button(self):
         self.buttons[0].draw()
 
+    def draw_exit_button(self):
+        self.buttons[1].draw()
         
-    
+    def create_exit_button(self):
+        
+        width = (2 * CELL_SIZE)*1.5
+        height = (CELL_SIZE)*1.5
+        
+        x = (BASE_SCREEN_WIDTH * self.main_screen.scale_factor / 2) + (CELL_SIZE * 4 )
+        y = (BASE_SCREEN_HEIGHT * self.main_screen.scale_factor - 150) 
+        
+        button = Button_observer(EXIT_BUTTON_SPRITESHEET_PATH, x, y,self.main_screen, self.menu_surface, width= width, height= height)
+        
+        self.buttons.append(button)
+        
+        
     def create_start_button(self):
         
-        width = (2 * CELL_SIZE)*2
-        height = (CELL_SIZE)*2
+        width = (2 * CELL_SIZE)*1.5
+        height = (CELL_SIZE)*1.5
         
         x = (BASE_SCREEN_WIDTH * self.main_screen.scale_factor / 2) 
         y = (BASE_SCREEN_HEIGHT * self.main_screen.scale_factor - 150) 

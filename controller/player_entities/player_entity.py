@@ -40,3 +40,5 @@ class Player_Entity(ABC):
             print("No ships remaining")
 
      
+    def can_shoot_cell(self, cell):
+        return cell.hidden

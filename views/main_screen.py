@@ -32,7 +32,7 @@ class Main_Screen:
 
     def set_game(self, game):
         self.game = game
-        self.game_screen.game = game
+        self.game_screen.set_game(game)
 
     def run(self):
         self.window.fill((0,0,0,0))

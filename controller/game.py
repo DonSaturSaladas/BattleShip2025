@@ -1,3 +1,5 @@
+import random
+
 from .player_entities import *
 from .player_entities.player_entity import Player_Entity
 from .player_entities.player import Player
@@ -13,10 +15,11 @@ from .ships.carrier import Carrier
 class Game:
     def __init__(self, main_screen):
         self.player = Player()
-        self.opponent_ai = Player()
+        self.opponent_ai = Player(self)
         self.main_screen = main_screen
         self.setBoardCellsObserver()
         self.ship_factory = Ship_factory()
+        self.current_player = self.player
         
     def setBoardCellsObserver(self):
         """'creates the observers of the cells and attaches them to their respective cells"""
@@ -35,4 +38,43 @@ class Game:
             ship = self.ship_factory.create_ship(cells)
         player_entity.put_ship(ship)
         
+    def init_ai_float():
+        carrier5 = [None,None,None,None,None]
+        battleship4 =[None,None,None,None]
+        cruiser3 = [None,None,None]
+        submarine3 = [None,None,None]
+        destroyer2 = [None,None]
+        
+        ships = [carrier5, battleship4, cruiser3, submarine3, destroyer2]
+        
+        for ship in ships:
+            self.randomize_ship_pos(ship)
+            
+    def randomize_ship_pos(ship_array):
+        
+        for 
+        
+            
+    def generate_random_coords(self, player):
+        
+        random_coords = random.randint(0, ROWS) , random.randint(0, COLS)
 
+        
+        while not player.board.getCell(random_coords[0],random_coords[1]).has_ship:
+            random_coords = random.randint(0, ROWS) , random.randint(0, COLS)
+            
+        return random_coords
+
+    def run_game(self):
+        self.current_player.play()
+            
+    
+    def change_current_player(self):
+        if self.current_player == self.player:
+            self.current_player = self.opponent_ai
+        else:
+            self.current_player = self.player
+
+    def get_current_player(self):
+        return self.current_player
+    

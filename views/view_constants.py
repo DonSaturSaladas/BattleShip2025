@@ -37,6 +37,8 @@ SHIP_TEST_PATH = pygame.transform.scale(
 
 ACCEPT_BUTTON_SPRITESHEET_PATH = "assets/Buttons/Start-Metal-Button.png"
 
+EXIT_BUTTON_SPRITESHEET_PATH = "assets/Buttons/Exit-Metal-Button.png"
+
 MENU_BACKGROUND_LOGO_SPRITESHEET_PATH = "assets/Backgrounds/Menu-Background-Logo.png"
 
 MENU_BACKGROUND_IMAGE_PATH = "assets/Backgrounds/Menu-Background.png"

@@ -11,3 +11,7 @@ class Player(Player_Entity):
     
     def put_ship(self, ship):
         return super().put_ship(ship)
+    
+    def play(self):
+        pass
+    
