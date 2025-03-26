@@ -1,6 +1,6 @@
 import random
 
-from player_entity import Player_Entity
+from .player_entity import Player_Entity
 from views.view_constants import *
 
 
@@ -11,14 +11,17 @@ class Opponent_ai(Player_Entity):
     def __init__(self, game):
         self.game = game
         self.mode = MODES[0]
-        self.game.init_ai_coords()
         super().__init__()
     
     
-    def play():
+    def play(self):
         pass
     
+    def getBoard(self):
+        return super().getBoard()
     
+    def put_ship(self, ship):
+        return super().put_ship(ship)
         
     def make_guess(self):
         if self.mode == "Hunt":

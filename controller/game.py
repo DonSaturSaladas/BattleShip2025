@@ -1,8 +1,7 @@
 import random
 
 from .player_entities import *
-from .player_entities.player_entity import Player_Entity
-from .player_entities.player import Player
+
 from .factories.ship_factory import Ship_factory
 from views.view_constants import ROWS, COLS
 from views.cell_Observer import Cell_Observer
@@ -14,12 +13,14 @@ from .ships.carrier import Carrier
 
 class Game:
     def __init__(self, main_screen):
+        self.ship_factory = Ship_factory()
         self.player = Player()
-        self.opponent_ai = Player(self)
+        self.opponent_ai = Opponent_ai(self)
         self.main_screen = main_screen
         self.setBoardCellsObserver()
-        self.ship_factory = Ship_factory()
         self.current_player = self.player
+        self.randomize_float(self.opponent_ai)
+        self.opponent_ai.board.print_board()
         
     def setBoardCellsObserver(self):
         """'creates the observers of the cells and attaches them to their respective cells"""
@@ -38,7 +39,7 @@ class Game:
             ship = self.ship_factory.create_ship(cells)
         player_entity.put_ship(ship)
         
-    def init_ai_float():
+    def randomize_float(self, player_entity):
         carrier5 = [None,None,None,None,None]
         battleship4 =[None,None,None,None]
         cruiser3 = [None,None,None]
@@ -48,20 +49,62 @@ class Game:
         ships = [carrier5, battleship4, cruiser3, submarine3, destroyer2]
         
         for ship in ships:
-            self.randomize_ship_pos(ship)
+            self.opponent_ai.board.print_board()
+            print()
+            self.randomize_ship_pos(player_entity, ship)
             
-    def randomize_ship_pos(ship_array):
+    def randomize_ship_pos(self, player_entity, ship_array):
+        valid_first_cell = False
+        while not valid_first_cell:
+            first_cell = self.generate_random_coords(player_entity)
+            orientation = random.choice(["v", "h"])
+            valid_first_cell = self.check_first_cell(first_cell, orientation, len(ship_array), player_entity)
+
+        for i in range(len(ship_array)):
+            if orientation == "v":
+                ship_array[i] = player_entity.board.getCell(first_cell[0], first_cell[1] + i)
+            elif orientation == "h":
+                ship_array[i] = player_entity.board.getCell(first_cell[0] + i, first_cell[1])
         
-        for 
+        self.create_ship(player_entity, ship_array)
+    
+    def check_first_cell(self, first_cell_coords, orientation, ship_lenght, player_entity):
+        is_valid = False
+        if self.ship_size_on_board(first_cell_coords, orientation, ship_lenght):
+            is_valid = True
+            if orientation == "v":
+                for i in range(ship_lenght):
+                    cell = player_entity.board.getCell(first_cell_coords[0], first_cell_coords[1] + i)
+                    if cell.hasShip:
+                        is_valid = False
+                        break
+            elif orientation == "h":
+                for i in range(ship_lenght):
+                    cell = player_entity.board.getCell(first_cell_coords[0] + i, first_cell_coords[1])
+                    if cell.hasShip:
+                        is_valid = False
+                        break
+        return is_valid
+    
+    def ship_size_on_board(self, first_cell_coords, orientation, ship_lenght):
+        is_on_board = True
+        if orientation == "h":
+            is_on_board = first_cell_coords[0] + ship_lenght < ROWS
+        elif orientation == "v":
+            is_on_board = first_cell_coords[1] + ship_lenght < COLS
+        return is_on_board
+
+
+
         
             
     def generate_random_coords(self, player):
         
-        random_coords = random.randint(0, ROWS) , random.randint(0, COLS)
+        random_coords = random.randint(0, ROWS - 1) , random.randint(0, COLS - 1)
 
         
-        while not player.board.getCell(random_coords[0],random_coords[1]).has_ship:
-            random_coords = random.randint(0, ROWS) , random.randint(0, COLS)
+        while player.board.getCell(random_coords[0],random_coords[1]).hasShip:
+            random_coords = (random.randint(0, ROWS - 1) , random.randint(0, COLS - 1))
             
         return random_coords
 

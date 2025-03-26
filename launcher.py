@@ -12,8 +12,6 @@ game = Game(main_screen)
 main_screen.set_game(game)
 clock = pygame.time.Clock()
 while main_screen.is_running():
-    
-    print()
     main_screen.run()
     clock.tick(60)
 
