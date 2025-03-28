@@ -34,3 +34,6 @@ class Ship():
         if self.hits == len(self.parts):
             self.sunked = True
             print(f'Size {len(self.parts)} sunked')
+            
+    def get_length(self):
+        return len(self.parts)

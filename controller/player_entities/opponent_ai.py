@@ -12,12 +12,13 @@ class Opponent_ai(Player_Entity):
     
     def __init__(self, game):
         self.game = game
-        self.mode = MODES[0] # HUNT or TARGET
+        self.mode = MODES[1] # HUNT or TARGET
         
         self.probability_matrix = [] # Auxiliar matrix for the probabilitys
         self.enemy_alive_ships = game.player.ships # Player alive ships
         self.init_matrix()
-        self.last_hited_cell = None # For target mode knowledge
+
+        self.target_mode_hited_cells = [] # For target mode knowledge
         
         
         
@@ -35,10 +36,11 @@ class Opponent_ai(Player_Entity):
         print(self.probability_matrix)
                 
                 
-                
-                
+                           
     def play(self):
-        pass
+        if(self.game.player.remaining_ships > 0):
+            self.make_guess()
+            self.game.change_current_player()   
     
     def getBoard(self):
         return super().getBoard()
@@ -48,17 +50,41 @@ class Opponent_ai(Player_Entity):
         
     def make_guess(self):
         player = self.game.player
-        
         if self.mode == "Hunt":
-            self.dfs_hunt()
+            self.dfs_hunt(player)
                 
         elif self.mode == "Target":
-            self.dfs_target()
+            self.dfs_target(player)
     
-    def dfs_hunt(self):
-        pass
+    def dfs_hunt(self, player):
+        self.update_probability_matrix()
+        target_cell = self.get_most_probable_cell()
+        hit, sunked =  player.shoot_cell(target_cell.x, target_cell.y)
+        
+        if(hit):
+            self.target_mode()
+            self.target_mode_hited_cells.append(target_cell)
+        
+        
     
-    def update_probabilty_matrix(self):
+    def dfs_target(self, player):
+        self.update_probability_matrix()
+        target_cell = self.get_most_probable_cell()
+        hit, sunked =  player.shoot_cell(target_cell.x, target_cell.y)
+        
+        if(hit):
+            self.target_mode_hited_cells.append(target_cell)
+        
+        if(sunked):
+            self.enemy_alive_ships.clear()
+            self.enemy_alive_ships = [ship for ship in player.ships if not ship.sunk]
+            self.target_mode_hited_cells.clear()
+            self.hunt_mode()
+    
+    
+        
+    
+    def update_probability_matrix(self):
         player_board :Board = self.game.player.board
         self.clean_probability_matrix()
         if self.mode == "Hunt":
@@ -67,14 +93,78 @@ class Opponent_ai(Player_Entity):
             self.update_probability_matrix_target(player_board)
     
     def update_probability_matrix_target(self, player_board):
-        hited_cell_x = self.last_hited_cell.x
-        hited_cell_y = self.last_hited_cell.y
+        hited_cell_x = self.target_mode_hited_cells[len(self.target_mode_hited_cells)-1].x
+        hited_cell_y = self.target_mode_hited_cells[len(self.target_mode_hited_cells)-1].y
         
         for ship in self.enemy_alive_ships:
             
-            #Check horizontal probable disposition of ship from the last_hited_cell
-            for i in range (1, len(ship)):
-                pass
+            #Check horizontal to the  probable disposition of ship from the last_hited_cell
+            for x in range (1-ship.get_length(), ship.get_length()):
+                
+                posible_ship = []
+                valid_pos = True
+                current_cell_x = x + hited_cell_x
+                
+                if (current_cell_x +ship.get_length() >= ROWS):
+                    valid_pos = False
+                    
+                i = 0
+                while i < ship.get_length() and valid_pos:
+                    cell = player_board.getCell(current_cell_x + i, hited_cell_y)
+                    posible_ship.append(cell)
+                    if (not cell.is_hidden()):
+                        if cell in self.target_mode_hited_cells:
+                            pass
+                        else:
+                            valid_pos = False
+                            
+                            break
+                    i += 1
+                
+                if(not self.contains_all_elements(self.target_mode_hited_cells, posible_ship) and not valid_pos):
+                    valid_pos = False
+                    
+                if valid_pos:
+                    for j in range(ship.get_length()):
+                        self.probability_matrix[hited_cell_y][current_cell_x + j] += 1
+                    
+                        
+            
+            #Check vertically to the probable disposition of ship from the last_hited_cell
+            for y in range (1-ship.get_length(), ship.get_length()):
+                
+                posible_ship = []
+                valid_pos = True
+                current_cell_y = y + hited_cell_y
+                
+                if (current_cell_y +ship.get_length() >= COLS):
+                    valid_pos = False
+                    
+                i = 0
+                while i < ship.get_length() and valid_pos:
+                    cell = player_board.getCell(hited_cell_x, current_cell_y + i)
+                    posible_ship.append(cell)
+                    if (not cell.is_hidden()):
+                        if cell in self.target_mode_hited_cells:
+                            pass
+                        else:
+                            valid_pos = False
+                            break
+                    i += 1
+                
+                if(not self.contains_all_elements(self.target_mode_hited_cells, posible_ship) and not valid_pos):
+                    valid_pos = False
+        
+                if valid_pos:
+                    for j in range(1,ship.get_length()):
+                        self.probability_matrix[current_cell_y + j][hited_cell_x] += 1
+                        
+                    
+                    
+                    
+                    
+                        
+                        
                 
                 
                             
@@ -87,17 +177,17 @@ class Opponent_ai(Player_Entity):
                 for col in range(COLS):
                     
                     valid_pos = True
-                    if(player_board.getCell.x + len(ship) < ROWS):
+                    if(col + ship.get_length() >= ROWS):
                         valid_pos = False
                         
                     i = 0
-                    while i < len(ship) and valid_pos:
-                        if not player_board.getCell(row, col + i).is_hidden():
+                    while i < ship.get_length() and valid_pos:
+                        if not player_board.getCell(col + i, row).is_hidden():
                             valid_pos = False
                             break
                         i += 1
                     if valid_pos:
-                        for j in range(len(ship)):
+                        for j in range(ship.get_length()):
                             self.probability_matrix[row][col + i] += 1
                             
                     else:
@@ -108,18 +198,18 @@ class Opponent_ai(Player_Entity):
                 for col in range(COLS):
                     
                     valid_pos = True
-                    if(player_board.getCell.y + len(ship) < COLS):
+                    if(row + ship.get_length() >= COLS):
                         valid_pos = False
                         
                     j = 0
-                    while j < len(ship) and valid_pos:
-                        if not player_board.getCell(row + j, col).is_hidden():
+                    while j < ship.get_length() and valid_pos:
+                        if not player_board.getCell(col, row + j).is_hidden():
                             valid_pos = False
                             break
                         j += 1
                         
                     if valid_pos:
-                        for j in range(len(ship)):
+                        for j in range(ship.get_length()):
                             self.probability_matrix[row + i][col] += 1     
                     else:
                         valid_pos = True
@@ -128,8 +218,8 @@ class Opponent_ai(Player_Entity):
     
     
     def clean_probability_matrix(self):
-        for row in ROWS:
-            for col in COLS:
+        for row in range(ROWS):
+            for col in range(COLS):
                 self.probability_matrix[row][col] = 0
             
             
@@ -149,7 +239,16 @@ class Opponent_ai(Player_Entity):
             
         return random_coords
 
+    def contains_all_elements(self, list1, list2):
+        return set(list1) <= set(list2)
 
-
-
-
+    def get_most_probable_cell(self):
+        max_value = max(max(row) for row in self.probability_matrix)
+        player_board = self.game.player.board
+        # Get all coordinates with max probability using list comprehension
+        max_coords = [player_board.getCell(j,i) for i in range(len(self.probability_matrix)) 
+                     for j in range(len(self.probability_matrix[0])) 
+                     if self.probability_matrix[i][j] == max_value]
+        
+        # Return random coordinate from the max probability cells
+        return random.choice(max_coords)
