@@ -18,8 +18,9 @@ class Game:
         self.opponent_ai = Opponent_ai(self)
         self.main_screen = main_screen
         self.setBoardCellsObserver()
-        self.current_player = self.player
+        
         self.randomize_float(self.opponent_ai)
+        self.current_player = self.opponent_ai
         self.opponent_ai.board.print_board()
         
     def setBoardCellsObserver(self):

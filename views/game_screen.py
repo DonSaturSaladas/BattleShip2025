@@ -38,6 +38,7 @@ class GameScreen:
                 player = self.game.get_current_player()
                 clicked_cell = self.get_current_player_clicked_cell(mouse_x, mouse_y)
                 clicked_cell_coords = (clicked_cell.x , clicked_cell.y)
+                
                 if player.can_shoot_cell(clicked_cell):
                     player.shoot_cell(clicked_cell_coords[0], clicked_cell_coords[1])
                     self.game.change_current_player()

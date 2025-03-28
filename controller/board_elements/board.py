@@ -18,8 +18,8 @@ class Board:
             for col in range(COLS):
                 self.cells[row].append(Cell(col, row, sprites))
 
-    def getCell(self, x, y):
-        return self.cells[y][x]
+    def getCell(self, x, y) -> Cell:
+        return self.cells[y][x] 
 
     def shoot_cell(self, cell):
         cell.selected()

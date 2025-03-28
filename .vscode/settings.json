@@ -57,5 +57,6 @@
   "C_Cpp_Runner.useLinkTimeOptimization": false,
   "C_Cpp_Runner.msvcSecureNoWarnings": false,
   "files.autoSave": "onFocusChange",
-  "editor.fontFamily": "'Hack nerd Font Mono', 'monospace', monospace"
+  "editor.fontFamily": "'Hack nerd Font Mono', 'monospace', monospace",
+  "glassit.force_sway": true
 }

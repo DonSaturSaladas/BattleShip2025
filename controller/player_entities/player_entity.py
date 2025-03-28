@@ -18,10 +18,14 @@ class Player_Entity(ABC):
         return self.board
     
     def shoot_cell(self, cell_x, cell_y):
+        ship_hitted = False
         cell = self.board.getCell(cell_x, cell_y)
         self.board.shoot_cell(cell)
         if cell.hasShip:
             self.hit_ship(cell)
+            ship_hitted = True
+        return ship_hitted
+            
     
     def hit_ship(self, cell):
         found_ship_cell = False

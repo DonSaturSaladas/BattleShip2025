@@ -32,6 +32,8 @@ class Cell:
            # print(f"CORRDS:  {self.x, self.y}")
             self.observer.update()
         
+    def is_hidden(self):
+        return self.hidden
 
     def selected(self):
         if self.hidden:
