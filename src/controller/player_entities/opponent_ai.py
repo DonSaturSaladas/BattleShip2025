@@ -19,6 +19,7 @@ class Opponent_ai(Player_Entity):
         self.init_matrix()
 
         self.target_mode_hited_cells = [] # For target mode knowledge
+        self.target_orientation = None
         
         
         
@@ -80,16 +81,22 @@ class Opponent_ai(Player_Entity):
         self.print_prob_matrix()
         if(hit):
             self.target_mode_hited_cells.append(target_cell)
+            if len(self.target_mode_hited_cells) == 2:
+                self.calculate_orientation()
         
         if(sunked):
             
             self.enemy_alive_ships = [ship for ship in player.ships if not ship.sunked] #Cambiar sentencia No se actualizan correctamente los barcos vivos
             print(len(self.enemy_alive_ships))
             self.target_mode_hited_cells = []
+            self.target_orientation = None
             self.hunt_mode()
     
-    
-        
+    def calculate_orientation(self):
+       if self.target_mode_hited_cells[-1].x == self.target_mode_hited_cells[-2].x:
+           self.target_orientation = "V"
+       elif self.target_mode_hited_cells[-1].y == self.target_mode_hited_cells[-2].y:
+           self.target_orientation = "H"
     
     def update_probability_matrix(self):
         player_board :Board = self.game.player.board
@@ -106,67 +113,69 @@ class Opponent_ai(Player_Entity):
         for ship in self.enemy_alive_ships:
             
             #Check horizontal to the  probable disposition of ship from the last_hited_cell
-            for x in range (1-ship.get_length(), ship.get_length()):
-                
-                posible_ship = []
-                valid_pos = True
-                current_cell_x = x + hited_cell_x
-                
-                if ( current_cell_x < 0 or current_cell_x +ship.get_length() >= ROWS):
-                    valid_pos = False
+            if(self.target_orientation != "V"):
+                for x in range (1-ship.get_length(), ship.get_length()):
                     
-                i = 0
-                while i < ship.get_length() and valid_pos:
-                    cell = player_board.getCell(current_cell_x + i, hited_cell_y)
-                    posible_ship.append(cell)
-                    if (not cell.is_hidden()):
-                        if cell in self.target_mode_hited_cells:
-                            pass
-                        else:
-                            valid_pos = False
-                            
-                            break
-                    i += 1
-                
-                if(not self.contains_all_elements(self.target_mode_hited_cells, posible_ship) and not valid_pos):
-                    valid_pos = False
+                    posible_ship = []
+                    valid_pos = True
+                    current_cell_x = x + hited_cell_x
                     
-                if valid_pos:
-                    for j in range(ship.get_length()):
-                        if(not player_board.getCell(current_cell_x +j, hited_cell_y) in self.target_mode_hited_cells):
-                            self.probability_matrix[hited_cell_y][current_cell_x + j] += 1
+                    if ( current_cell_x < 0 or current_cell_x + ship.get_length() >= ROWS):
+                        valid_pos = False
+                        
+                    i = 0
+                    while i < ship.get_length() and valid_pos:
+                        cell = player_board.getCell(current_cell_x + i, hited_cell_y)
+                        posible_ship.append(cell)
+                        if (not cell.is_hidden()):
+                            if cell in self.target_mode_hited_cells:
+                                pass
+                            else:
+                                valid_pos = False
+                                
+                                break
+                        i += 1
+                    
+                    if(not self.contains_all_elements(self.target_mode_hited_cells, posible_ship) and not valid_pos):
+                        valid_pos = False
+                        
+                    if valid_pos:
+                        for j in range(ship.get_length()):
+                            if(not player_board.getCell(current_cell_x +j, hited_cell_y) in self.target_mode_hited_cells):
+                                self.probability_matrix[hited_cell_y][current_cell_x + j] += 1
                     
                         
             
             #Check vertically to the probable disposition of ship from the last_hited_cell
-            for y in range (1-ship.get_length(), ship.get_length()):
-                
-                posible_ship = []
-                valid_pos = True
-                current_cell_y = y + hited_cell_y
-                
-                if (current_cell_y < 0 or current_cell_y +ship.get_length() >= COLS):
-                    valid_pos = False
+            if(self.target_orientation != "H"):
+                for y in range (1-ship.get_length(), ship.get_length()):
                     
-                i = 0
-                while i < ship.get_length() and valid_pos:
-                    cell = player_board.getCell(hited_cell_x, current_cell_y + i)
-                    posible_ship.append(cell)
-                    if (not cell.is_hidden()):
-                        if cell in self.target_mode_hited_cells:
-                            pass
-                        else:
-                            valid_pos = False
-                            break
-                    i += 1
-                
-                if(not self.contains_all_elements(self.target_mode_hited_cells, posible_ship) and not valid_pos):
-                    valid_pos = False
-        
-                if valid_pos:
-                    for j in range(ship.get_length()):
-                        if(not player_board.getCell(hited_cell_x, current_cell_y + j) in self.target_mode_hited_cells):
-                            self.probability_matrix[current_cell_y + j][hited_cell_x] += 1
+                    posible_ship = []
+                    valid_pos = True
+                    current_cell_y = y + hited_cell_y
+                    
+                    if (current_cell_y < 0 or current_cell_y +ship.get_length() >= COLS):
+                        valid_pos = False
+                        
+                    i = 0
+                    while i < ship.get_length() and valid_pos:
+                        cell = player_board.getCell(hited_cell_x, current_cell_y + i)
+                        posible_ship.append(cell)
+                        if (not cell.is_hidden()):
+                            if cell in self.target_mode_hited_cells:
+                                pass
+                            else:
+                                valid_pos = False
+                                break
+                        i += 1
+                    
+                    if(not self.contains_all_elements(self.target_mode_hited_cells, posible_ship) and not valid_pos):
+                        valid_pos = False
+            
+                    if valid_pos:
+                        for j in range(ship.get_length()):
+                            if(not player_board.getCell(hited_cell_x, current_cell_y + j) in self.target_mode_hited_cells):
+                                self.probability_matrix[current_cell_y + j][hited_cell_x] += 1
                         
                     
                     
