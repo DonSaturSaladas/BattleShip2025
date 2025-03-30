@@ -18,7 +18,7 @@ class Menu_screen:
         self.current_frame = 0
         self.animation_speed = 40
         self.last_update = pygame.time.get_ticks()
-        self.wait_time = 2000 # 5 seconds(mili) de espera
+        self.wait_time = 5000 # 5 seconds(mili) de espera
         self.wait_start = 0 # Cuando comenzo la espera 
         self.animation_finished = False # Si esta esperando
     
@@ -32,11 +32,13 @@ class Menu_screen:
                 
     def run(self):
     
-        if (self.animation_finished or self.main_screen.first_iteration ):
+        if(self.animation_finished or self.main_screen.first_iteration):
             self.draw_background_image()
         
-        self.draw_buttons()
+        
         self.animate_logo_background()
+        self.draw_buttons()
+        
         
         
         self.window.blit(self.menu_surface, (0,0))
@@ -61,22 +63,26 @@ class Menu_screen:
     def mouse_clicked(self, event):
         mouse_x = event.pos[0]
         mouse_y = event.pos[1]
-        
+        pygame.mouse.set_pos((mouse_x, mouse_y))
         if event.button == 1:
             self.handle_button_clicked(mouse_x, mouse_y)
         
     def mouse_released(self, event):
         mouse_x = event.pos[0]
         mouse_y = event.pos[1]
-        
+
         if event.button == 1:
             self.handle_button_released(mouse_x, mouse_y)
         
     
     
     def handle_button_clicked(self, mouse_x, mouse_y):
+        self.animation_finished = True
+        self.current_frame = 0
+        
         if self.buttons[0].get_rect().collidepoint(mouse_x, mouse_y): #If click acept button
             self.buttons[0].update(1)
+            
             
         if self.buttons[1].get_rect().collidepoint(mouse_x, mouse_y): #If click exit button
             self.buttons[1].update(1)
@@ -84,6 +90,9 @@ class Menu_screen:
         
         
     def handle_button_released(self, mouse_x, mouse_y):
+        self.objects_group.update(0)
+        
+        
         if self.buttons[0].get_rect().collidepoint(mouse_x, mouse_y):
             self.buttons[0].update(0)
             self.main_screen.change_screen("Setup")
@@ -172,6 +181,7 @@ class Menu_screen:
         button = Button_observer(EXIT_BUTTON_SPRITESHEET_PATH, x, y,self.main_screen, self.menu_surface, width= width, height= height)
         
         self.buttons.append(button)
+        self.objects_group.add(button)
         
         
     def create_start_button(self):
@@ -186,6 +196,7 @@ class Menu_screen:
         button = Button_observer(ACCEPT_BUTTON_SPRITESHEET_PATH, x, y,self.main_screen, self.menu_surface, width= width, height= height)
         
         self.buttons.append(button)
+        self.objects_group.add(button)
         
         
         

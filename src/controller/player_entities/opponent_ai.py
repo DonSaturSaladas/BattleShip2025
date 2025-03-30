@@ -102,6 +102,7 @@ class Opponent_ai(Player_Entity):
         player_board :Board = self.game.player.board
         self.clean_probability_matrix()
         if self.mode == "Hunt":
+            self.apply_parity_strategy()
             self.update_probability_matrix_hunt(player_board)
         elif self.mode == "Target":
             self.update_probability_matrix_target(player_board)
@@ -240,6 +241,16 @@ class Opponent_ai(Player_Entity):
         for row in range(ROWS):
             for col in range(COLS):
                 self.probability_matrix[row][col] = 0
+                
+    def apply_parity_strategy(self):
+        for row in range(ROWS):
+            for col in range(COLS):
+                if(col % 2 == 0 ):
+                    if row % 2 == 0:
+                        self.probability_matrix[row][col] = 0.5
+                else:
+                    if row % 2 != 0:
+                        self.probability_matrix[row][col] = 0.5
             
             
             
