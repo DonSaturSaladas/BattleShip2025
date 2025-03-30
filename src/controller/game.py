@@ -1,5 +1,5 @@
 import random
-
+import pygame
 from .player_entities import *
 
 from .factories.ship_factory import Ship_factory
@@ -22,6 +22,8 @@ class Game:
         self.randomize_float(self.opponent_ai)
         self.current_player = self.opponent_ai
         self.opponent_ai.board.print_board()
+        
+        self.turn  = 1
         
     def setBoardCellsObserver(self):
         """'creates the observers of the cells and attaches them to their respective cells"""
@@ -96,9 +98,6 @@ class Game:
         return is_on_board
 
 
-
-        
-            
     def generate_random_coords(self, player):
         
         random_coords = random.randint(0, ROWS - 1) , random.randint(0, COLS - 1)
@@ -111,6 +110,9 @@ class Game:
 
     def run_game(self):
         self.current_player.play()
+        if(self.player.remaining_ships <= 0 or self.opponent_ai.remaining_ships<=0):
+            self.main_screen.change_screen("Menu") #TODO: Change for Game over screen and do this there
+            self.restart_game()
             
     
     def change_current_player(self):
@@ -119,6 +121,16 @@ class Game:
         else:
             self.current_player = self.player
 
-    def get_current_player(self):
-        return self.current_player
+    def get_current_oposite_player(self):
+        player = None
+        if self.current_player == self.player:
+            player = self.opponent_ai
+        else:
+            player = self.player
+            
+        return player
     
+    def restart_game(self):
+        self.main_screen.setup_screens()
+        self.main_screen.set_game(Game(self.main_screen))
+        

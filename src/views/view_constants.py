@@ -21,27 +21,27 @@ SHIP_POOL_HEIGHT = 7
 # Assets Path
 
 WATER_PATH = pygame.transform.scale(
-    (pygame.image.load(os.path.join("assets", "water.png"))),
+    (pygame.image.load(os.path.join("src/assets", "water.png"))),
     (CELL_SIZE - 3, CELL_SIZE -1),
 )
 
 CROSS_PATH = pygame.transform.scale(
-    (pygame.image.load(os.path.join("assets", "cross.png"))),
+    (pygame.image.load(os.path.join("src/assets", "cross.png"))),
     (CELL_SIZE - 3, CELL_SIZE -1),
 )
 
 SHIP_TEST_PATH = pygame.transform.scale(
-    (pygame.image.load(os.path.join("assets", "test-ship-img.jpg"))),
+    (pygame.image.load(os.path.join("src/assets", "test-ship-img.jpg"))),
     (CELL_SIZE - 3, CELL_SIZE -1),
 )
 
-ACCEPT_BUTTON_SPRITESHEET_PATH = "assets/Buttons/Start-Metal-Button.png"
+ACCEPT_BUTTON_SPRITESHEET_PATH = "src/assets/Buttons/Start-Metal-Button.png"
 
-EXIT_BUTTON_SPRITESHEET_PATH = "assets/Buttons/Exit-Metal-Button.png"
+EXIT_BUTTON_SPRITESHEET_PATH = "src/assets/Buttons/Exit-Metal-Button.png"
 
-MENU_BACKGROUND_LOGO_SPRITESHEET_PATH = "assets/Backgrounds/Menu-Background-Logo.png"
+MENU_BACKGROUND_LOGO_SPRITESHEET_PATH = "src/assets/Backgrounds/Menu-Background-Logo.png"
 
-MENU_BACKGROUND_IMAGE_PATH = "assets/Backgrounds/Menu-Background.png"
+MENU_BACKGROUND_IMAGE_PATH = "src/assets/Backgrounds/Menu-Background.png"
 
 # Font
 

@@ -35,7 +35,7 @@ class GameScreen:
         mouse_y = event.pos[1]
         if event.button == 1:    #Left Click
             if self.clicked_current_player_board(mouse_x, mouse_y):
-                player = self.game.get_current_player()
+                player = self.game.get_current_oposite_player()
                 clicked_cell = self.get_current_player_clicked_cell(mouse_x, mouse_y)
                 clicked_cell_coords = (clicked_cell.x , clicked_cell.y)
                 
@@ -44,15 +44,17 @@ class GameScreen:
                     self.game.change_current_player()
     
     def clicked_current_player_board(self, coord_x, coord_y):
-        x_on_board = coord_x >= self.boards_coordinates[self.game.current_player][0] and coord_x <= self.boards_coordinates[self.game.current_player][0] + ROWS * self.scaled_cell_size
-        y_on_board = coord_y >= self.boards_coordinates[self.game.current_player][1] and coord_y <= self.boards_coordinates[self.game.current_player][1] + COLS * self.scaled_cell_size
+        player =self.game.get_current_oposite_player()
+        x_on_board = coord_x >= self.boards_coordinates[player][0] and coord_x <= self.boards_coordinates[player][0] + ROWS * self.scaled_cell_size
+        y_on_board = coord_y >= self.boards_coordinates[player][1] and coord_y <= self.boards_coordinates[player][1] + COLS * self.scaled_cell_size
         return x_on_board and y_on_board
     
     
     def get_current_player_clicked_cell(self, coord_x, coord_y):
-        board_x = int((coord_x - self.boards_coordinates[self.game.current_player][0]) // self.scaled_cell_size)
-        board_y = int((coord_y - self.boards_coordinates[self.game.current_player][1]) // self.scaled_cell_size)
-        return self.game.current_player.board.getCell(board_x, board_y)
+        player =self.game.get_current_oposite_player()
+        board_x = int((coord_x - self.boards_coordinates[player][0]) // self.scaled_cell_size)
+        board_y = int((coord_y - self.boards_coordinates[player][1]) // self.scaled_cell_size)
+        return player.board.getCell(board_x, board_y)
     
 
     def get_players_board_coordinates(self):
@@ -69,5 +71,6 @@ class GameScreen:
     def screen_size_changed(self):
         self.scaled_cell_size = self.main_screen.scaled_cell_size
         self.boards_coordinates = self.get_players_board_coordinates()
+    
         
     
