@@ -4,7 +4,7 @@ from .player_entities import *
 
 from .factories.ship_factory import Ship_factory
 from views.view_constants import ROWS, COLS
-from views.cell_Observer import Cell_Observer
+from views.observers import Cell_Observer
 from controller.board_elements.cell import Cell
 
 from .ships.carrier import Carrier

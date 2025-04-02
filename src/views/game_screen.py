@@ -20,11 +20,11 @@ class GameScreen:
     
     def draw_player_board(self):
         player_left, player_top = self.boards_coordinates[self.game.player]
-        self.main_screen.draw_board(player_left, player_top, self.game.player.board)
+        self.main_screen.draw_board(player_left, player_top, "L", self.game.player.board)
     
     def draw_enemy_board(self):
         enemy_left, enemy_top = self.boards_coordinates[self.game.opponent_ai]
-        self.main_screen.draw_board(enemy_left, enemy_top, self.game.opponent_ai.board)
+        self.main_screen.draw_board(enemy_left, enemy_top, "R", self.game.opponent_ai.board)
 
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:

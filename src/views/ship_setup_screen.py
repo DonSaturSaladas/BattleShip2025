@@ -28,7 +28,7 @@ class ShipSetupScreen:
         self.draw_setup_screen()
 
     def draw_setup_screen(self):
-        self.main_screen.draw_board(self.board_coodinates[0], self.board_coodinates[1], self.main_screen.game.player.board)
+        self.main_screen.draw_board(self.board_coodinates[0], self.board_coodinates[1], "R", self.main_screen.game.player.board )
         self.draw_ship_pool(self.ship_pool_coordinates[0], self.ship_pool_coordinates[1])
         self.draw_ships()
         self.draw_acept_button()
@@ -95,6 +95,7 @@ class ShipSetupScreen:
                         
                     self.main_screen.game.create_ship(self.main_screen.game.player ,ship_cells)
                 self.main_screen.game.player.board.print_board()
+                self.main_screen.game.player.show_ship_pos()
                 self.main_screen.change_screen("Game")
 
                         
@@ -126,6 +127,9 @@ class ShipSetupScreen:
                 board_coordinates = self.get_pressed_cell_coords(event.pos[0], event.pos[1])
                 new_x = self.board_coodinates[0] + board_coordinates[0] * self.scaled_cell_size
                 new_y = self.board_coodinates[1] + board_coordinates[1] * self.scaled_cell_size
+                print((new_x, new_y))
+                print(board_coordinates)
+                print(self.board_coodinates)
             
                 if not self.check_colission(self.selected_ship) and not self.ship_out_of_board(self.selected_ship):
                     self.get_ship_placeholder(self.selected_ship).set_board_coordinates(board_coordinates[0], board_coordinates[1])
@@ -166,7 +170,7 @@ class ShipSetupScreen:
 
     def get_pressed_cell_coords(self, coordinate_x, coordinate_y):
         board_x = int((coordinate_x - self.board_coodinates[0]) // self.scaled_cell_size)
-        board_y = int(coordinate_y // self.scaled_cell_size)
+        board_y = int((coordinate_y - self.board_coodinates[1]) // self.scaled_cell_size)
         return (board_x, board_y)
     
     def get_pressed_cell(self, screen_x, screen_y):

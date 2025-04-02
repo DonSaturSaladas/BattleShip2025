@@ -28,7 +28,7 @@ class Main_Screen:
         
         self.first_iteration = True
         self.game = None
-        self.PRIMARY_FONT = pygame.font.SysFont('arial', 25, True, False)
+        self.PRIMARY_FONT = pygame.font.SysFont('ArcadeClassic', 30, True, False)
 
     def set_game(self, game):
         self.game = game
@@ -86,7 +86,7 @@ class Main_Screen:
         self.selected_screen = self.menu_screen #Later change to menu screen
         
         
-    def draw_board(self, left, top, board=None):
+    def draw_board(self, left, top, num_pos, board=None):
         board_width = ROWS * self.scaled_cell_size
         board_height = COLS * self.scaled_cell_size
 
@@ -111,9 +111,31 @@ class Main_Screen:
                 )
 
                 if board:
-                    board.getCell(row, col).update(
-                        left, top
-                    )  # TODO : replace with a way to choose whose board draw (player or opponent)
+                    board.getCell(row, col).observer.set_pos(left, top)
+                    board.getCell(row, col).observer.update()  # TODO : replace with a way to choose whose board draw (player or opponent)
+                    
+        for col in range(ROWS):
+            letter = chr(65 + col)  # 65 es el código ASCII de 'A'
+            text_surface = self.PRIMARY_FONT.render(letter, True, (255, 255, 255))
+            text_rect = text_surface.get_rect()
+            # Centra la letra en la celda correspondiente
+            text_rect.centerx = left + (col * self.scaled_cell_size) + (self.scaled_cell_size // 2)
+            text_rect.bottom = top - 5  # Ajusta el margen superior (por ejemplo, 5 píxeles arriba)
+            self.window.blit(text_surface, text_rect)
+
+        # Dibuja los números (1 a 10) a la izquierda del tablero.
+        for row in range(COLS):
+            number = str(row + 1)
+            text_surface = self.PRIMARY_FONT.render(number, True, (255, 255, 255))
+            text_rect = text_surface.get_rect()
+            # Centra el número en la vertical correspondiente
+            text_rect.centery = top + (row * self.scaled_cell_size) + (self.scaled_cell_size // 2)
+            if num_pos == "L":
+                text_rect.right = left - 5  
+            else:
+                text_rect.left = left + board_width + 5
+                
+            self.window.blit(text_surface, text_rect)
 
 
     """def draw_ship(self, lenght, left, top, color):

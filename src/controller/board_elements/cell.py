@@ -12,8 +12,8 @@ class Cell:
         self.x = x
         self.y = y
         self.observer = None
-        self.sprites = sprites
-        self.actualSprite = sprites[0]
+        
+        
 
         
         self.hidden = True
@@ -38,7 +38,7 @@ class Cell:
     def selected(self):
         if self.hidden:
             self.hidden = False
-            self.actualSprite = self.sprites[1]
+            self.observer.update(key = "Hitted")
             self.update()
             
     def changeSprite(self, sprite):

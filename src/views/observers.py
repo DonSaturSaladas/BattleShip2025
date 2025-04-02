@@ -101,8 +101,86 @@ class Background_observer(Object_observer):
         for i in range(sheet_rows):
             x = row_size * i
             sprites.append(ss.image_at((x, 0, 1920, row_heigth )))
+          
         
         super().__init__(sprites, left, top, width, height, main_screen, father_surface)
 
 
+
+class Cell_Observer(Object_observer):
+    
+    def __init__(self,main_screen,cell):
+        self.win = main_screen
+        self.cell = cell
+
         
+        
+        
+        ss_water = spritesheet(WATER_PATH)
+        water_sprite = []
+        water_sprite.append(ss_water.image_at((0,0,1216,1216)))
+        
+        ss_water_hitted = spritesheet(WATER_HITTED_PATH)
+        water_hitted_sprite = []
+        water_hitted_sprite.append(ss_water_hitted.image_at((0,0,1216,1216)))
+        
+        
+        
+        
+        
+        # Todo elemento del diccionario debera de ser un arreglo independientemente de si solamente contiene una imagen 
+        self.sprites_dict = {"Water": water_sprite, 
+                   "Ship" : None,
+                   "Hitted" : water_hitted_sprite}
+        
+        
+        self.current_sprite = self.sprites_dict.get("Water")
+        
+        
+        
+        super().__init__(self.sprites_dict["Water"], 0, 0, CELL_SIZE -3 , CELL_SIZE -1, main_screen, main_screen.window)
+        
+        self.relative_left = self.cell.x
+        self.relative_top = self.cell.y
+        
+        self.calcPos()
+        
+        self.image = self.current_sprite[0]
+
+    def set_pos(self, left, top):
+        self.left = left +3 
+        self.top = top
+
+    def add_sprite(self, key, sprite):
+        self.sprites_dict[key] =  sprite
+
+    def calcPos(self):
+        self.relative_left = self.win.scaled_cell_size * self.cell.x + self.left
+        self.relative_top = self.win.scaled_cell_size * self.cell.y + self.top 
+    
+    def scale_img(self):
+            
+            self.rect = self.image.get_rect()  
+            self.rect.x = int(self.left) 
+            self.rect.y = int(self.top)
+            
+            width = self.width * self.screen.scale_factor
+            height = self.height * self.screen.scale_factor
+            self.relative_left = self.win.scaled_cell_size * self.cell.x + self.left
+            self.relative_top = self.win.scaled_cell_size * self.cell.y + self.top 
+            self.image = pygame.transform.scale(self.image,(width, height)).convert_alpha()
+            
+            self.rect = self.image.get_rect(topleft=(self.relative_left, self.relative_top))
+            
+        
+    def update(self,key = None, frame = None):
+        if key is not None:
+            self.current_sprite = self.sprites_dict.get(key)
+            self.image = self.current_sprite[0]
+        
+        if frame is not None:
+            self.image = self.current_sprite[frame]
+            
+        self.draw()
+        
+    

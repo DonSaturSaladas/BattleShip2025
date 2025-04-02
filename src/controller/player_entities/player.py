@@ -4,6 +4,7 @@ class Player(Player_Entity):
     
     def __init__(self):
         super().__init__()
+        self.show_ship_pos()
         
     def getBoard(self):
         return super().getBoard()
@@ -14,4 +15,8 @@ class Player(Player_Entity):
     
     def play(self):
         pass
+    
+    def show_ship_pos(self):
+        for ship in self.ships:
+            ship.show_cells()
     
