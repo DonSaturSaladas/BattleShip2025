@@ -66,6 +66,9 @@ class Object_observer(pygame.sprite.Sprite):
     def get_surface(self):
         return self.image
     
+    def set_father_surface(self, surface):
+        self.father_surface = surface
+    
         
 class Button_observer(Object_observer):
     
@@ -136,6 +139,9 @@ class Cell_Observer(Object_observer):
         
         self.current_sprite = self.sprites_dict.get("Water")
         
+        self.animation_interval = 50  # milisegundos entre frames (ajusta según necesidad)
+        self.animation_last_time = pygame.time.get_ticks()
+        self.animation_frame_index = 0
         
         
         super().__init__(self.sprites_dict["Water"], 0, 0, CELL_SIZE -3 , CELL_SIZE -1, main_screen, main_screen.window)
@@ -173,14 +179,19 @@ class Cell_Observer(Object_observer):
             self.rect = self.image.get_rect(topleft=(self.relative_left, self.relative_top))
             
         
-    def update(self,key = None, frame = None):
+    def update(self,key = None):
         if key is not None:
             self.current_sprite = self.sprites_dict.get(key)
             self.image = self.current_sprite[0]
         
-        if frame is not None:
-            self.image = self.current_sprite[frame]
+        if len(self.current_sprite) > 1 :
+            self.animate_sprite()
             
         self.draw()
         
-    
+    def animate_sprite(self):
+        current_time = pygame.time.get_ticks()
+        if current_time - self.animation_last_time > self.animation_interval:
+            self.animation_frame_index = (self.animation_frame_index + 1) % len(self.sprites_dict["Hitted"])
+            self.animation_last_time = current_time
+        self.image = self.sprites_dict["Hitted"][self.animation_frame_index]

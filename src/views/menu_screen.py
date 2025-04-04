@@ -12,6 +12,7 @@ class Menu_screen:
         self.scaled_cell_size = main_screen.scaled_cell_size
         self.buttons = []
         self.backgrounds = []
+        
         self.objects_group = pygame.sprite.Group()
         self.setup_screen_objects()
               
@@ -109,6 +110,17 @@ class Menu_screen:
         height = BASE_SCREEN_HEIGHT *self.main_screen.scale_factor
         self.menu_surface = pygame.transform.scale(self.menu_surface,(width, height)).convert_alpha()
         
+        for sprite in self.backgrounds:
+            sprite.father_surface = self.menu_surface
+            sprite.scale_img()
+            print(sprite)
+            
+        for sprite in self.buttons:
+            sprite.father_surface = self.menu_surface
+            sprite.scale_img()
+            print(sprite)
+            
+        
         #TODO: Actualizar los valores de father_surface de todas las superficies de la pantalla por el nuevo menu_surface 
     
     def animate_logo_background(self):
@@ -143,12 +155,14 @@ class Menu_screen:
         self.backgrounds.append(background)
         
         
+        
     
     def create_background_image(self):
         height = BASE_SCREEN_HEIGHT * self.main_screen.scale_factor 
         
         background = Background_observer(MENU_BACKGROUND_IMAGE_PATH,self.main_screen,self.menu_surface,1080, height = height)
         self.backgrounds.append(background)
+        
         
         
     

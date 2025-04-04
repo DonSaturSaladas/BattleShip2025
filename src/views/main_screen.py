@@ -60,6 +60,7 @@ class Main_Screen:
     def screen_size_changed(self):
         self.ship_setup_screen.screen_size_changed()
         self.game_screen.screen_size_changed()
+        self.menu_screen.screen_size_changed()
         
     def is_running(self):
         return self.running
@@ -109,10 +110,11 @@ class Main_Screen:
                     ),
                     width=1,
                 )
-
+                cell = board.getCell(row, col)
                 if board:
-                    board.getCell(row, col).observer.set_pos(left, top)
-                    board.getCell(row, col).observer.update()  # TODO : replace with a way to choose whose board draw (player or opponent)
+                    cell.observer.set_pos(left, top)
+                
+                    cell.observer.update()  # TODO : replace with a way to choose whose board draw (player or opponent)
                     
         for col in range(ROWS):
             letter = chr(65 + col)  # 65 es el código ASCII de 'A'
