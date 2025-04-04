@@ -16,6 +16,7 @@ class GameScreen:
     def run(self):
         self.draw_player_board()
         self.draw_enemy_board()
+        self.draw_mouse_cross()
         self.game.run_game()
     
     def draw_player_board(self):
@@ -26,6 +27,29 @@ class GameScreen:
         enemy_left, enemy_top = self.boards_coordinates[self.game.opponent_ai]
         self.main_screen.draw_board(enemy_left, enemy_top, "R", self.game.opponent_ai.board)
 
+    def draw_mouse_cross(self):
+        if pygame.mouse.get_focused():
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            if self.clicked_player_board(mouse_x, mouse_y, self.game.opponent_ai):
+                self.draw_cross_lines(mouse_x, mouse_y)
+
+    def draw_cross_lines(self, mouse_x, mouse_y):
+        self.draw_horizontal_line(mouse_x, mouse_y)
+        self.draw_vertical_line(mouse_x, mouse_y)
+
+    def draw_horizontal_line(self, mouse_x, mouse_y):
+        pygame.draw.line(self.window,
+                        (255,25,25),
+                        (self.boards_coordinates[self.game.opponent_ai][0], mouse_y),
+                        (self.boards_coordinates[self.game.opponent_ai][0] + self.scaled_cell_size*COLS, mouse_y), 5)
+        
+    def draw_vertical_line(self, mouse_x, mouse_y):
+        pygame.draw.line(self.window,
+                        (255,25,25),
+                        (mouse_x, self.boards_coordinates[self.game.opponent_ai][1]),
+                        (mouse_x, self.boards_coordinates[self.game.opponent_ai][1] + self.scaled_cell_size*COLS), 5)
+
+
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             self.mouse_clicked(event)
@@ -34,8 +58,8 @@ class GameScreen:
         mouse_x = event.pos[0]
         mouse_y = event.pos[1]
         if event.button == 1:    #Left Click
-            if self.clicked_current_player_board(mouse_x, mouse_y):
-                player = self.game.get_current_oposite_player()
+            player = self.game.get_current_oposite_player()
+            if self.clicked_player_board(mouse_x, mouse_y, player):
                 clicked_cell = self.get_current_player_clicked_cell(mouse_x, mouse_y)
                 clicked_cell_coords = (clicked_cell.x , clicked_cell.y)
                 
@@ -43,8 +67,7 @@ class GameScreen:
                     player.shoot_cell(clicked_cell_coords[0], clicked_cell_coords[1])
                     self.game.change_current_player()
     
-    def clicked_current_player_board(self, coord_x, coord_y):
-        player =self.game.get_current_oposite_player()
+    def clicked_player_board(self, coord_x, coord_y, player):
         x_on_board = coord_x >= self.boards_coordinates[player][0] and coord_x <= self.boards_coordinates[player][0] + ROWS * self.scaled_cell_size
         y_on_board = coord_y >= self.boards_coordinates[player][1] and coord_y <= self.boards_coordinates[player][1] + COLS * self.scaled_cell_size
         return x_on_board and y_on_board
