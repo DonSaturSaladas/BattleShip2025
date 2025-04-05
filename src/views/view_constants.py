@@ -34,6 +34,8 @@ CROSS_PATH = "src/assets/cross.png"
 
 SHIP_TEST_PATH = "src/assets/test-ship-img.jpg"
 
+BATTLESHIP_PATH = "src/assets/Ships/Battleship(4).png"
+
 
 # Backgrounds And buttons
 ACCEPT_BUTTON_SPRITESHEET_PATH = "src/assets/Buttons/Start-Metal-Button.png"

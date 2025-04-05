@@ -130,11 +130,11 @@ class Cell_Observer(Object_observer):
         
         
         
-        
         # Todo elemento del diccionario debera de ser un arreglo independientemente de si solamente contiene una imagen 
         self.sprites_dict = {"Water": water_sprite, 
                    "Ship" : None,
-                   "Hitted" : water_hitted_sprite}
+                   "Hitted" : water_hitted_sprite,
+                   "Sunked" : None}
         
         
         self.current_sprite = self.sprites_dict.get("Water")

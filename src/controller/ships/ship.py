@@ -29,13 +29,34 @@ class Ship():
         for cell in self.parts:
             cell.hasShip = True
             cell.observer.add_sprite("Hitted", sprites)
-            self.init_ship_sprite(cell) # Implement The specific sprite for each class (Testing abstrac method)
+        
+        #Impementar sprites para cuando el barco este hundido
+        
+        self.init_ship_sprite(SHIP_TEST_PATH, 612, 612)
+        
+        # Implement The specific sprite for each class (Testing abstrac method)
     
-    def init_ship_sprite(self, cell): 
-        ss = spritesheet(SHIP_TEST_PATH)
-        sprite = []
-        sprite.append(ss.image_at((0,0,612,612)))
-        cell.observer.add_sprite("Ship",sprite)
+    
+    def init_ship_sprite(self, path, width, height):
+        ss = spritesheet(path)
+        sheet_width = int(ss.sheet.get_width())
+        row_size = width
+        sheet_rows = (int) (sheet_width / row_size)
+        sprites = []
+        
+        for i in range(sheet_rows):
+            x = row_size * i
+            frame = ss.image_at((x, 0, width, height ))
+            if self.get_orientation() == "V":
+                frame = pygame.transform.rotate(frame, 270)
+                
+            sprites.append([frame])
+        
+        i = 0
+        for cell in self.parts:
+            cell.observer.add_sprite("Ship", sprites[i])
+            if(len(sprites) > 1):
+                i += 1
     
     
     def show_cells(self):
